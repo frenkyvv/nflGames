@@ -19,7 +19,7 @@ const HomePage = () => {
 
   return (
     <div className={styles.container}>
-      <div className={styles.titulo}>NFL Home</div>
+      <div className={styles.titulo}>NFL Games and Odds</div>
       <div className={styles.inputBox}>
         <div className="input-group mb-3">
           <select
