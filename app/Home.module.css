@@ -19,12 +19,13 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 300px;
+    width: 350px;
 }
 .box {
     width: 100%;
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 300px;
+    width: 350px;
+    color: rgb(211, 211, 187);
 }

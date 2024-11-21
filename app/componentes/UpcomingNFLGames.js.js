@@ -55,7 +55,7 @@ const UpcomingNFLGames = ({ team }) => {
       <div className={styles.subtitulo}>Próximos Juegos</div>
       <div className={styles.box}>
       {filteredEvents.map(event => (
-        <div key={event.id} className="card mb-3">
+        <div key={event.id} className="card mb-3" style={{ height: '250px' }}>
           <div className="card-body">
             <h5 className="card-title">
               {event.home_team} vs {event.away_team}
