@@ -10,39 +10,39 @@ const UpcomingOdds = ({ team }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  const fetchEvents = async () => {
-    const options = {
-      method: 'GET',
-      url: 'https://api.the-odds-api.com/v4/sports/americanfootball_nfl/odds',
-      params: {
-        apiKey: '68bf845edcc203a1af3e7e42b05df487',
-        regions: 'us',
-        markets: 'h2h,spreads',
-        oddsFormat: 'american',
-        dateFormat: 'iso'
+  useEffect(() => {
+    const fetchEvents = async () => {
+      const options = {
+        method: 'GET',
+        url: 'https://api.the-odds-api.com/v4/sports/americanfootball_nfl/odds',
+        params: {
+          apiKey: '68bf845edcc203a1af3e7e42b05df487',
+          regions: 'us',
+          markets: 'h2h,spreads',
+          oddsFormat: 'american',
+          dateFormat: 'iso'
+        }
+      };
+
+      try {
+        const response = await axios.request(options);
+        setEvents(response.data);
+      } catch (err) {
+        console.error("Error al cargar los datos:", err.message);
+        if (err.response?.status === 429) {
+          console.error("Demasiadas solicitudes. Reintentando en 3 segundos...");
+          await delay(3000);
+          fetchEvents();
+        } else {
+          setError("Error al cargar los datos: " + err.message);
+        }
+      } finally {
+        setLoading(false);
       }
     };
 
-    try {
-      const response = await axios.request(options);
-      setEvents(response.data);
-    } catch (err) {
-      console.error("Error al cargar los datos:", err.message);
-      if (err.response?.status === 429) {
-        console.error("Demasiadas solicitudes. Reintentando en 3 segundos...");
-        await delay(3000);
-        fetchEvents();
-      } else {
-        setError("Error al cargar los datos: " + err.message);
-      }
-    } finally {
-      setLoading(false);
-    }
-  };
+    const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
-  const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
-
-  useEffect(() => {
     fetchEvents();
   }, []);
 
