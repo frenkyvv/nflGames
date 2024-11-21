@@ -53,6 +53,7 @@ const UpcomingNFLGames = ({ team }) => {
   return (
     <div className={styles.container}>
       <div className={styles.subtitulo}>Próximos Juegos</div>
+      <div className={styles.box}>
       {filteredEvents.map(event => (
         <div key={event.id} className="card mb-3">
           <div className="card-body">
@@ -62,7 +63,9 @@ const UpcomingNFLGames = ({ team }) => {
             <p>Fecha y hora: {new Date(event.commence_time).toLocaleString()}</p>
           </div>
         </div>
+        
       ))}
+      </div>
     </div>
   );
 };
