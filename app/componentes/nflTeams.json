@@ -1,0 +1,127 @@
+[
+    {
+      "shortName": "49ers",
+      "apiName": "San Francisco 49ers"
+    },
+    {
+      "shortName": "Bears",
+      "apiName": "Chicago Bears"
+    },
+    {
+      "shortName": "Bengals",
+      "apiName": "Cincinnati Bengals"
+    },
+    {
+      "shortName": "Bills",
+      "apiName": "Buffalo Bills"
+    },
+    {
+      "shortName": "Broncos",
+      "apiName": "Denver Broncos"
+    },
+    {
+      "shortName": "Browns",
+      "apiName": "Cleveland Browns"
+    },
+    {
+      "shortName": "Buccaneers",
+      "apiName": "Tampa Bay Buccaneers"
+    },
+    {
+      "shortName": "Cardinals",
+      "apiName": "Arizona Cardinals"
+    },
+    {
+      "shortName": "Chargers",
+      "apiName": "Los Angeles Chargers"
+    },
+    {
+      "shortName": "Chiefs",
+      "apiName": "Kansas City Chiefs"
+    },
+    {
+      "shortName": "Colts",
+      "apiName": "Indianapolis Colts"
+    },
+    {
+      "shortName": "Cowboys",
+      "apiName": "Dallas Cowboys"
+    },
+    {
+      "shortName": "Dolphins",
+      "apiName": "Miami Dolphins"
+    },
+    {
+      "shortName": "Eagles",
+      "apiName": "Philadelphia Eagles"
+    },
+    {
+      "shortName": "Falcons",
+      "apiName": "Atlanta Falcons"
+    },
+    {
+      "shortName": "Giants",
+      "apiName": "New York Giants"
+    },
+    {
+      "shortName": "Jaguars",
+      "apiName": "Jacksonville Jaguars"
+    },
+    {
+      "shortName": "Jets",
+      "apiName": "New York Jets"
+    },
+    {
+      "shortName": "Lions",
+      "apiName": "Detroit Lions"
+    },
+    {
+      "shortName": "Packers",
+      "apiName": "Green Bay Packers"
+    },
+    {
+      "shortName": "Panthers",
+      "apiName": "Carolina Panthers"
+    },
+    {
+      "shortName": "Patriots",
+      "apiName": "New England Patriots"
+    },
+    {
+      "shortName": "Raiders",
+      "apiName": "Las Vegas Raiders"
+    },
+    {
+      "shortName": "Rams",
+      "apiName": "Los Angeles Rams"
+    },
+    {
+      "shortName": "Ravens",
+      "apiName": "Baltimore Ravens"
+    },
+    {
+      "shortName": "Saints",
+      "apiName": "New Orleans Saints"
+    },
+    {
+      "shortName": "Seahawks",
+      "apiName": "Seattle Seahawks"
+    },
+    {
+      "shortName": "Steelers",
+      "apiName": "Pittsburgh Steelers"
+    },
+    {
+      "shortName": "Texans",
+      "apiName": "Houston Texans"
+    },
+    {
+      "shortName": "Titans",
+      "apiName": "Tennessee Titans"
+    },
+    {
+      "shortName": "Vikings",
+      "apiName": "Minnesota Vikings"
+    }
+  ]
+  
