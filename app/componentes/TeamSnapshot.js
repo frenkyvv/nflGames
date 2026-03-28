@@ -36,15 +36,19 @@ const renderPlayerCard = (player, role, primaryLabel, primaryValue, secondaryLab
           <span className={styles.playerPosition}>#{player.jersey} · {player.position}</span>
         </div>
       </div>
-      <div className={styles.playerStats}>
+      <div
+        className={`${styles.playerStats} ${secondaryLabel ? '' : styles.playerStatsSingle}`}
+      >
         <div className={styles.playerStatBlock}>
           <span className={styles.playerStatLabel}>{primaryLabel}</span>
           <strong className={styles.playerStatValue}>{formatStat(primaryValue)}</strong>
         </div>
-        <div className={styles.playerStatBlock}>
-          <span className={styles.playerStatLabel}>{secondaryLabel}</span>
-          <strong className={styles.playerStatValue}>{formatStat(secondaryValue)}</strong>
-        </div>
+        {secondaryLabel ? (
+          <div className={styles.playerStatBlock}>
+            <span className={styles.playerStatLabel}>{secondaryLabel}</span>
+            <strong className={styles.playerStatValue}>{formatStat(secondaryValue)}</strong>
+          </div>
+        ) : null}
       </div>
     </article>
   );
@@ -168,25 +172,25 @@ const TeamSnapshot = ({ team }) => {
                 snapshot.leaders.quarterback?.quarterbackRushingYardsPerGame,
                 team.logo
               )}
-              {snapshot.leaders.receivers.map((player, index) =>
+              {snapshot.leaders.receivers.map((player) =>
                 renderPlayerCard(
                   player,
-                  `Receptor ${index + 1}`,
+                  'Receptor',
                   'Recepción YDS/J',
                   player.receivingYardsPerGame,
-                  'Recepción YDS',
-                  player.receivingYards,
+                  null,
+                  null,
                   team.logo
                 )
               )}
-              {snapshot.leaders.rushers.map((player, index) =>
+              {snapshot.leaders.rushers.map((player) =>
                 renderPlayerCard(
                   player,
-                  `Corredor ${index + 1}`,
+                  'Corredor',
                   'Carrera YDS/J',
                   player.rushingYardsPerGame,
-                  'Carrera YDS',
-                  player.rushingYards,
+                  null,
+                  null,
                   team.logo
                 )
               )}

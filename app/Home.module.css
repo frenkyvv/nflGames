@@ -331,6 +331,10 @@
   gap: 10px;
 }
 
+.playerStatsSingle {
+  grid-template-columns: 1fr;
+}
+
 .playerStatBlock {
   padding: 10px 12px;
   border-radius: 16px;

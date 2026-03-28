@@ -32,7 +32,7 @@ const HomePage = () => {
       <div className={styles.hero}>
         <section className={styles.heroPanel}>
           <span className={styles.kicker}>NFL Odds Dashboard</span>
-          <h1 className={styles.title}>Partidos NFL con cuotas decimales y una vista mucho mas clara</h1>
+          <h1 className={styles.title}>Herramienta de estadisticas NFL</h1>
           <p className={styles.description}>
             Elige tu equipo y revisa los proximos juegos, moneyline en formato decimal y spreads por casa de apuestas en un tablero mas visual.
           </p>
