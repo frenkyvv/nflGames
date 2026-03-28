@@ -9,38 +9,49 @@ const NFLResults = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  const fetchResults = async () => {
-    const options = {
-      method: 'GET',
-      url: 'https://api.the-odds-api.com/v4/sports/nfl/scores',
-      params: {
-        apiKey: 'YOUR_API_KEY',
-        daysFrom: 1,
-        dateFormat: 'iso'
+  useEffect(() => {
+    let cancelled = false;
+
+    const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
+    const fetchResults = async () => {
+      const options = {
+        method: 'GET',
+        url: 'https://api.the-odds-api.com/v4/sports/nfl/scores',
+        params: {
+          apiKey: 'YOUR_API_KEY',
+          daysFrom: 1,
+          dateFormat: 'iso'
+        }
+      };
+
+      try {
+        const response = await axios.request(options);
+        if (!cancelled) {
+          setResults(response.data);
+        }
+      } catch (err) {
+        if (err.response?.status === 429) {
+          console.error("Demasiadas solicitudes. Reintentando en 3 segundos...");
+          await delay(3000);
+          if (!cancelled) {
+            await fetchResults();
+          }
+        } else if (!cancelled) {
+          setError(err);
+        }
+      } finally {
+        if (!cancelled) {
+          setLoading(false);
+        }
       }
     };
 
-    try {
-      const response = await axios.request(options);
-      setResults(response.data);
-    } catch (err) {
-      if (err.response?.status === 429) {
-        // Implementar reintento con retraso en caso de error 429
-        console.error("Demasiadas solicitudes. Reintentando en 3 segundos...");
-        await delay(3000);
-        fetchResults();
-      } else {
-        setError(err);
-      }
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
-
-  useEffect(() => {
     fetchResults();
+
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
   if (loading) return <p>Cargando...</p>;
