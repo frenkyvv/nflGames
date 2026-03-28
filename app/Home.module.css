@@ -166,9 +166,8 @@
 }
 
 .selectedTeamCard {
-  display: flex;
-  align-items: center;
-  gap: 14px;
+  padding: 0;
+  overflow: hidden;
 }
 
 .selectedLogo,
@@ -184,6 +183,168 @@
   display: flex;
   flex-direction: column;
   gap: 4px;
+}
+
+.teamSnapshot {
+  display: grid;
+  gap: 18px;
+  padding: 18px;
+}
+
+.selectedTeamTop {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  align-items: center;
+}
+
+.selectedTeamBrand {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.teamRecordPill,
+.teamSummaryCard,
+.playerCard,
+.teamSnapshotState {
+  border: 1px solid rgba(20, 38, 63, 0.08);
+  background: linear-gradient(180deg, #fffdf8 0%, #f8f3e8 100%);
+  box-shadow: 0 18px 40px rgba(20, 38, 63, 0.05);
+}
+
+.teamRecordPill {
+  min-width: 110px;
+  padding: 14px 16px;
+  border-radius: 18px;
+  text-align: center;
+}
+
+.teamRecordLabel,
+.teamSummaryLabel,
+.playerRole,
+.playerStatLabel {
+  display: block;
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #7b8798;
+}
+
+.teamRecordValue,
+.teamSummaryValue,
+.playerName,
+.playerStatValue {
+  color: #14263f;
+}
+
+.teamRecordValue {
+  display: block;
+  margin-top: 6px;
+  font-size: 1.35rem;
+}
+
+.teamSummaryGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.teamSummaryCard {
+  padding: 16px;
+  border-radius: 18px;
+}
+
+.teamSummaryValue {
+  display: block;
+  margin-top: 8px;
+  font-size: 1rem;
+}
+
+.playersPanel {
+  display: grid;
+  gap: 14px;
+}
+
+.playersPanelHeader {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: flex-start;
+}
+
+.playersPanelNote {
+  margin: 0;
+  max-width: 30ch;
+  color: #5e6a7a;
+  font-size: 0.92rem;
+  line-height: 1.5;
+}
+
+.playersGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.playerCard,
+.teamSnapshotState {
+  padding: 14px;
+  border-radius: 20px;
+}
+
+.playerCardTop {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.playerHeadshotWrap {
+  width: 64px;
+  height: 64px;
+  border-radius: 18px;
+  overflow: hidden;
+  background: rgba(20, 38, 63, 0.08);
+  flex-shrink: 0;
+}
+
+.playerHeadshot {
+  width: 64px;
+  height: 64px;
+  object-fit: cover;
+}
+
+.playerHeader {
+  display: grid;
+  gap: 3px;
+}
+
+.playerPosition {
+  color: #5e6a7a;
+  font-size: 0.9rem;
+}
+
+.playerStats {
+  margin-top: 14px;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.playerStatBlock {
+  padding: 10px 12px;
+  border-radius: 16px;
+  background: rgba(20, 38, 63, 0.04);
+}
+
+.playerStatValue {
+  display: block;
+  margin-top: 6px;
+  font-size: 1.05rem;
+}
+
+.teamSnapshotState {
+  margin-top: 0;
 }
 
 .selectedLabel,
@@ -478,6 +639,12 @@
     grid-template-columns: 1fr;
   }
 
+  .teamSummaryGrid,
+  .playersGrid,
+  .playerStats {
+    grid-template-columns: 1fr;
+  }
+
   .bookmakerGrid,
   .gamesGrid {
     grid-template-columns: 1fr;
@@ -492,6 +659,13 @@
 
   .matchupBanner {
     align-items: stretch;
+  }
+
+  .selectedTeamTop,
+  .selectedTeamBrand,
+  .playersPanelHeader {
+    flex-direction: column;
+    align-items: flex-start;
   }
 
   .matchupTeam,

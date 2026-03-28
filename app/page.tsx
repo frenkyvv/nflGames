@@ -1,9 +1,9 @@
 'use client'
 
-import Image from 'next/image';
 import React, { useState } from 'react';
 import UpcomingNFLGames from './componentes/UpcomingNFLGames';
 import UpcomingOdds from './componentes/UpcomingOdds';
+import TeamSnapshot from './componentes/TeamSnapshot';
 import styles from './Home.module.css';
 import nflTeams from './componentes/nflTeams.json';
 import { getTeamData } from './componentes/teamUtils';
@@ -82,19 +82,7 @@ const HomePage = () => {
 
           {previewTeam ? (
             <div className={styles.selectedTeamCard}>
-              <Image
-                className={styles.selectedLogo}
-                src={previewTeam.logo}
-                alt={previewTeam.apiName}
-                width={68}
-                height={68}
-                sizes="68px"
-              />
-              <div className={styles.selectedTeamIdentity}>
-                <span className={styles.selectedLabel}>Equipo activo</span>
-                <strong className={styles.selectedName}>{previewTeam.apiName}</strong>
-                <span className={styles.selectedMeta}>Colores, logo y tarjetas personalizadas para tu seleccion.</span>
-              </div>
+              <TeamSnapshot team={previewTeam} />
             </div>
           ) : (
             <div className={styles.helperCard}>
