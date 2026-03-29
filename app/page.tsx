@@ -1,5 +1,6 @@
 'use client'
 
+import Image from 'next/image';
 import React, { useState } from 'react';
 import UpcomingNFLGames from './componentes/UpcomingNFLGames';
 import UpcomingOdds from './componentes/UpcomingOdds';
@@ -48,7 +49,19 @@ const HomePage = () => {
             </div>
             <div className={styles.statCard}>
               <span className={styles.statLabel}>Vista</span>
-              <strong className={styles.statValue}>{submittedTeamName ? previewTeam?.shortName ?? 'Activa' : 'Selecciona uno'}</strong>
+              <div className={styles.statViewValue}>
+                {previewTeam ? (
+                  <Image
+                    className={styles.statTeamLogo}
+                    src={previewTeam.logo}
+                    alt={previewTeam.apiName}
+                    width={22}
+                    height={22}
+                    sizes="22px"
+                  />
+                ) : null}
+                <strong className={styles.statValue}>{submittedTeamName ? previewTeam?.shortName ?? 'Activa' : 'Selecciona uno'}</strong>
+              </div>
             </div>
           </div>
         </section>
