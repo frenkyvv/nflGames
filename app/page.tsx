@@ -1,7 +1,7 @@
 'use client'
 
 import Image from 'next/image';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import UpcomingNFLGames from './componentes/UpcomingNFLGames';
 import UpcomingOdds from './componentes/UpcomingOdds';
 import TeamSnapshot from './componentes/TeamSnapshot';
@@ -9,16 +9,95 @@ import styles from './Home.module.css';
 import nflTeams from './componentes/nflTeams.json';
 import { getTeamData } from './componentes/teamUtils';
 
+type GroupStandingRow = {
+  position: number;
+  abbreviation: string | null;
+  shortDisplayName: string;
+  logo: string | null;
+  gamesPlayed: number;
+  wins: number;
+  losses: number;
+  isSelected: boolean;
+};
+
+type TeamProfileSummary = {
+  groupStanding?: {
+    name: string;
+    abbreviation: string | null;
+    conferenceName: string | null;
+    selectedPosition: number | null;
+    rows: GroupStandingRow[];
+  } | null;
+};
+
 const HomePage = () => {
   const [teamName, setTeamName] = useState('');
   const [submittedTeamName, setSubmittedTeamName] = useState<string | null>(null);
+  const [teamProfile, setTeamProfile] = useState<TeamProfileSummary | null>(null);
+  const [teamProfileLoading, setTeamProfileLoading] = useState(false);
+  const [teamProfileError, setTeamProfileError] = useState<string | null>(null);
 
+  const submittedTeam = submittedTeamName ? getTeamData(submittedTeamName) : null;
   const previewTeam = getTeamData(submittedTeamName ?? teamName);
   const pageTheme = {
     '--selected-primary': previewTeam?.primaryColor ?? '#16324f',
     '--selected-secondary': previewTeam?.secondaryColor ?? '#d97706',
     '--selected-accent': previewTeam?.accentColor ?? '#f2d7a1',
   } as React.CSSProperties;
+
+  useEffect(() => {
+    if (!submittedTeam?.abbreviation) {
+      setTeamProfile(null);
+      setTeamProfileError(null);
+      setTeamProfileLoading(false);
+      return;
+    }
+
+    let cancelled = false;
+
+    const loadTeamProfile = async () => {
+      try {
+        setTeamProfileLoading(true);
+        setTeamProfileError(null);
+        setTeamProfile(null);
+
+        const response = await fetch(
+          `/api/team-profile/${submittedTeam.abbreviation.toLowerCase()}`
+        );
+
+        if (response.ok === false) {
+          throw new Error('No pude cargar la tabla del grupo.');
+        }
+
+        const data = (await response.json()) as TeamProfileSummary;
+
+        if (cancelled === false) {
+          setTeamProfile(data);
+        }
+      } catch (fetchError) {
+        if (cancelled === false) {
+          setTeamProfile(null);
+          setTeamProfileError(
+            fetchError instanceof Error
+              ? fetchError.message
+              : 'No pude cargar la tabla del grupo.'
+          );
+        }
+      } finally {
+        if (cancelled === false) {
+          setTeamProfileLoading(false);
+        }
+      }
+    };
+
+    loadTeamProfile();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [submittedTeam?.abbreviation]);
+
+  const activeGroupStanding = teamProfile?.groupStanding ?? null;
 
   const handleTeamNameChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setTeamName(e.target.value);
@@ -63,6 +142,96 @@ const HomePage = () => {
                 <strong className={styles.statValue}>{submittedTeamName ? previewTeam?.shortName ?? 'Activa' : 'Selecciona uno'}</strong>
               </div>
             </div>
+          </div>
+
+          <div className={styles.groupStandingsCard}>
+            <div className={styles.groupStandingsHeader}>
+              <div>
+                <span className={styles.groupStandingsEyebrow}>Grupo del equipo</span>
+                <strong className={styles.groupStandingsTitle}>
+                  {activeGroupStanding?.name ?? 'Tabla divisional'}
+                </strong>
+                <p className={styles.groupStandingsCopy}>
+                  {submittedTeamName
+                    ? 'Posicion en la tabla del equipo elegido con JJ, ganados y perdidos de su grupo.'
+                    : 'Selecciona un equipo para ver la posicion dentro de su grupo y una tabla rapida de la division.'}
+                </p>
+              </div>
+
+              {activeGroupStanding?.selectedPosition ? (
+                <div className={styles.groupStandingsSpotlight}>
+                  <span className={styles.groupStandingsSpotlightLabel}>Posicion actual</span>
+                  <strong className={styles.groupStandingsSpotlightValue}>
+                    #{activeGroupStanding.selectedPosition}
+                  </strong>
+                  <span className={styles.groupStandingsSpotlightMeta}>
+                    {activeGroupStanding.conferenceName ?? 'NFL'}
+                  </span>
+                </div>
+              ) : null}
+            </div>
+
+            {teamProfileLoading ? (
+              <div className={styles.groupStandingsState}>
+                Cargando la tabla del grupo del equipo seleccionado...
+              </div>
+            ) : null}
+
+            {teamProfileLoading === false && teamProfileError ? (
+              <div className={styles.groupStandingsState}>{teamProfileError}</div>
+            ) : null}
+
+            {teamProfileLoading === false &&
+            teamProfileError === null &&
+            activeGroupStanding ? (
+              <div className={styles.groupStandingsTable}>
+                <div className={`${styles.groupStandingsRow} ${styles.groupStandingsHeaderRow}`}>
+                  <span>Pos</span>
+                  <span>Equipo</span>
+                  <span>JJ</span>
+                  <span>G</span>
+                  <span>P</span>
+                </div>
+
+                {activeGroupStanding.rows.map((row) => (
+                  <div
+                    key={row.abbreviation ?? row.shortDisplayName}
+                    className={`${styles.groupStandingsRow} ${
+                      row.isSelected ? styles.groupStandingsRowSelected : ''
+                    }`}
+                  >
+                    <span className={styles.groupStandingsCellStrong}>{row.position}</span>
+                    <div className={styles.groupStandingsTeam}>
+                      {row.logo ? (
+                        <Image
+                          className={styles.groupStandingsTeamLogo}
+                          src={row.logo}
+                          alt={row.shortDisplayName}
+                          width={24}
+                          height={24}
+                          sizes="24px"
+                        />
+                      ) : null}
+                      <span className={styles.groupStandingsTeamName}>
+                        {row.shortDisplayName}
+                      </span>
+                    </div>
+                    <span>{row.gamesPlayed}</span>
+                    <span>{row.wins}</span>
+                    <span>{row.losses}</span>
+                  </div>
+                ))}
+              </div>
+            ) : null}
+
+            {teamProfileLoading === false &&
+            teamProfileError === null &&
+            submittedTeamName &&
+            activeGroupStanding === null ? (
+              <div className={styles.groupStandingsState}>
+                Esta tabla aparecera cuando ESPN publique standings disponibles para el grupo del equipo.
+              </div>
+            ) : null}
           </div>
         </section>
 

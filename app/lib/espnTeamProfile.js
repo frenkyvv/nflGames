@@ -1,5 +1,6 @@
 const ESPN_SITE_BASE = 'https://site.api.espn.com/apis/site/v2/sports/football/nfl';
 const ESPN_COMMON_BASE = 'https://site.api.espn.com/apis/common/v3/sports/football/nfl';
+const ESPN_WEB_BASE = 'https://site.web.api.espn.com/apis/v2/sports/football/nfl';
 
 const RELEVANT_POSITIONS = ['QB', 'RB', 'FB', 'WR', 'TE'];
 const RECEIVER_POSITIONS = ['WR', 'TE'];
@@ -44,6 +45,9 @@ const roundToSingleDecimal = (value) => {
 
 const getCategoryByName = (categories = [], categoryName) =>
   categories.find((category) => category.name === categoryName);
+
+const getStatByName = (stats = [], statName) =>
+  stats.find((stat) => stat.name === statName || stat.type === statName) ?? null;
 
 const getLatestTeamStatRecord = (category, teamId) => {
   if (!category?.statistics) {
@@ -169,6 +173,52 @@ const pickRushers = (players) => {
   return naturalRushers.concat(fallbackRushers);
 };
 
+const mapGroupStandingRow = (entry, index, selectedAbbreviation) => {
+  const wins = toNumber(getStatByName(entry.stats, 'wins')?.value);
+  const losses = toNumber(getStatByName(entry.stats, 'losses')?.value);
+  const ties = toNumber(getStatByName(entry.stats, 'ties')?.value);
+
+  return {
+    position: index + 1,
+    teamId: entry.team?.id ?? null,
+    abbreviation: entry.team?.abbreviation ?? null,
+    displayName: entry.team?.displayName ?? 'Equipo',
+    shortDisplayName: entry.team?.shortDisplayName ?? entry.team?.name ?? 'Equipo',
+    logo: entry.team?.logos?.[0]?.href ?? null,
+    gamesPlayed: wins + losses + ties,
+    wins,
+    losses,
+    ties,
+    isSelected:
+      entry.team?.abbreviation?.toLowerCase() === selectedAbbreviation.toLowerCase(),
+  };
+};
+
+const loadGroupStanding = async (groupId, selectedAbbreviation) => {
+  if (!groupId) {
+    return null;
+  }
+
+  const data = await fetchEspnJson(`${ESPN_WEB_BASE}/standings?group=${groupId}`);
+  const rows = (data.standings?.entries ?? []).map((entry, index) =>
+    mapGroupStandingRow(entry, index, selectedAbbreviation)
+  );
+
+  if (rows.length === 0) {
+    return null;
+  }
+
+  const selectedRow = rows.find((row) => row.isSelected);
+
+  return {
+    name: data.name ?? 'Grupo',
+    abbreviation: data.abbreviation ?? null,
+    conferenceName: data.parent?.abbreviation ?? null,
+    selectedPosition: selectedRow?.position ?? null,
+    rows,
+  };
+};
+
 export const getEspnTeamProfile = async (abbreviation) => {
   const normalizedAbbreviation = abbreviation.toLowerCase();
 
@@ -198,6 +248,10 @@ export const getEspnTeamProfile = async (abbreviation) => {
   const quarterback = pickQuarterback(playerSnapshots);
   const receivers = pickReceivers(playerSnapshots);
   const rushers = pickRushers(playerSnapshots);
+  const groupStanding = await loadGroupStanding(
+    teamData.team?.groups?.id,
+    normalizedAbbreviation
+  ).catch(() => null);
 
   return {
     team: {
@@ -211,6 +265,7 @@ export const getEspnTeamProfile = async (abbreviation) => {
       venueCity: teamData.team?.franchise?.venue?.address?.city ?? null,
       venueState: teamData.team?.franchise?.venue?.address?.state ?? null,
     },
+    groupStanding,
     leaders: {
       quarterback,
       receivers,
