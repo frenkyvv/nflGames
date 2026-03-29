@@ -1,6 +1,40 @@
 import nflTeams from './nflTeams.json';
 
 const teamMap = new Map(nflTeams.map((team) => [team.apiName, team]));
+const teamTimeZoneMap = {
+  ARI: 'America/Phoenix',
+  ATL: 'America/New_York',
+  BAL: 'America/New_York',
+  BUF: 'America/New_York',
+  CAR: 'America/New_York',
+  CHI: 'America/Chicago',
+  CIN: 'America/New_York',
+  CLE: 'America/New_York',
+  DAL: 'America/Chicago',
+  DEN: 'America/Denver',
+  DET: 'America/New_York',
+  GB: 'America/Chicago',
+  HOU: 'America/Chicago',
+  IND: 'America/Indiana/Indianapolis',
+  JAX: 'America/New_York',
+  KC: 'America/Chicago',
+  LV: 'America/Los_Angeles',
+  LAC: 'America/Los_Angeles',
+  LAR: 'America/Los_Angeles',
+  MIA: 'America/New_York',
+  MIN: 'America/Chicago',
+  NE: 'America/New_York',
+  NO: 'America/Chicago',
+  NYG: 'America/New_York',
+  NYJ: 'America/New_York',
+  PHI: 'America/New_York',
+  PIT: 'America/New_York',
+  SF: 'America/Los_Angeles',
+  SEA: 'America/Los_Angeles',
+  TB: 'America/New_York',
+  TEN: 'America/Chicago',
+  WSH: 'America/New_York',
+};
 
 export const getTeamData = (teamName) => {
   if (!teamName) {
@@ -10,13 +44,17 @@ export const getTeamData = (teamName) => {
   return teamMap.get(teamName) ?? null;
 };
 
-export const formatGameTime = (dateString) =>
+export const getTeamTimeZone = (abbreviation) =>
+  teamTimeZoneMap[String(abbreviation ?? '').toUpperCase()] ?? null;
+
+export const formatGameTime = (dateString, timeZone) =>
   new Intl.DateTimeFormat('es-MX', {
     weekday: 'short',
     day: 'numeric',
     month: 'short',
     hour: '2-digit',
     minute: '2-digit',
+    ...(timeZone ? { timeZone } : {}),
   }).format(new Date(dateString));
 
 export const formatDecimalOdds = (value) => {

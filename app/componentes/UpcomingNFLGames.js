@@ -3,7 +3,7 @@
 import Image from 'next/image';
 import React, { useEffect, useState } from 'react';
 import styles from '../Home.module.css';
-import { formatGameTime, getTeamData } from './teamUtils';
+import { formatGameTime, getTeamData, getTeamTimeZone } from './teamUtils';
 
 const UpcomingNFLGames = ({ team }) => {
   const [events, setEvents] = useState([]);
@@ -57,7 +57,7 @@ const UpcomingNFLGames = ({ team }) => {
           <span className={styles.sectionEyebrow}>Calendario</span>
           <h2 className={styles.sectionTitle}>Proximos juegos de {teamInfo?.shortName ?? team}</h2>
         </div>
-        <p className={styles.sectionNote}>Horario mostrado en tu zona local.</p>
+        <p className={styles.sectionNote}>Horario mostrado en la zona local del estadio donde se juega.</p>
       </div>
 
       {loading ? (
@@ -86,6 +86,7 @@ const UpcomingNFLGames = ({ team }) => {
           {filteredEvents.map((event) => {
             const homeTeam = getTeamData(event.home_team);
             const awayTeam = getTeamData(event.away_team);
+            const venueTimeZone = getTeamTimeZone(homeTeam?.abbreviation);
             const selectedIsHome = event.home_team === team;
             const awayClassName = [styles.teamPanel, event.away_team === team ? styles.teamPanelSelected : '']
               .filter(Boolean)
@@ -97,7 +98,9 @@ const UpcomingNFLGames = ({ team }) => {
             return (
               <article key={event.id} className={styles.gameCard}>
                 <div className={styles.cardTopRow}>
-                  <span className={styles.kickoffChip}>{formatGameTime(event.commence_time)}</span>
+                  <span className={styles.kickoffChip}>
+                    {formatGameTime(event.commence_time, venueTimeZone)}
+                  </span>
                   <span className={styles.locationChip}>{selectedIsHome ? 'Local' : 'Visitante'}</span>
                 </div>
 

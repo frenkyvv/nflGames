@@ -1,74 +1,55 @@
 .page {
-  --selected-primary: #13233d;
-  --selected-secondary: #f59e0b;
-  --selected-accent: #fef0c7;
+  --selected-primary: #16324f;
+  --selected-secondary: #d97706;
+  --selected-accent: #f2d7a1;
   min-height: 100vh;
   padding: 32px 20px 56px;
   background:
-    radial-gradient(circle at top left, color-mix(in srgb, var(--selected-accent) 50%, transparent) 0%, transparent 36%),
-    radial-gradient(circle at top right, color-mix(in srgb, var(--selected-secondary) 18%, transparent) 0%, transparent 26%),
-    linear-gradient(180deg, #fffaf0 0%, #f7f1e4 52%, #efe7d9 100%);
-  color: #14213d;
-}
-
-.hero,
-.contentStack,
-.emptyState {
-  width: min(1220px, 100%);
-  margin-inline: auto;
+    radial-gradient(circle at top right, var(--selected-accent) 0%, rgba(242, 215, 161, 0.12) 18%, transparent 38%),
+    radial-gradient(circle at top left, rgba(22, 50, 79, 0.14) 0%, transparent 32%),
+    linear-gradient(180deg, #f8f3e8 0%, #f4eee2 48%, #eee6d8 100%);
+  color: #14263f;
 }
 
 .hero {
+  width: min(1180px, 100%);
+  margin: 0 auto 28px;
   display: grid;
   grid-template-columns: minmax(0, 1.45fr) minmax(320px, 0.95fr);
   gap: 20px;
-  margin-bottom: 24px;
 }
 
 .heroPanel,
 .selectorPanel,
-.card,
+.section,
 .emptyState {
-  border: 1px solid rgba(20, 33, 61, 0.08);
-  box-shadow: 0 22px 55px rgba(20, 33, 61, 0.1);
-  backdrop-filter: blur(16px);
+  background: rgba(255, 252, 247, 0.86);
+  border: 1px solid rgba(20, 38, 63, 0.08);
+  box-shadow: 0 24px 60px rgba(20, 38, 63, 0.1);
+  backdrop-filter: blur(14px);
 }
 
 .heroPanel {
   padding: 28px;
   border-radius: 32px;
-  color: #fffaf0;
+  color: #fff8ef;
   background:
-    linear-gradient(145deg, rgba(15, 23, 42, 0.98) 0%, rgba(26, 42, 74, 0.9) 54%, rgba(245, 158, 11, 0.82) 100%),
+    linear-gradient(145deg, rgba(18, 35, 58, 0.98) 0%, rgba(18, 35, 58, 0.88) 46%, rgba(217, 119, 6, 0.78) 100%),
     linear-gradient(180deg, var(--selected-primary) 0%, var(--selected-secondary) 100%);
 }
 
-.selectorPanel,
-.card,
-.emptyState {
-  background: rgba(255, 252, 246, 0.88);
-  border-radius: 28px;
-}
-
-.selectorPanel,
-.card {
-  padding: 24px;
-}
-
 .kicker,
+.sectionEyebrow,
 .statLabel,
 .formLabel,
-.cardEyebrow,
-.previewLabel,
+.selectedLabel,
+.footerLabel,
+.marketTitle,
+.bestOddsLabel,
+.bookmakerName,
+.sectionNote,
 .helperTitle,
-.calloutEyebrow,
-.heroMetricLabel,
-.seedSpotlightLabel,
-.nextGameEyebrow,
-.dateChip,
-.locationChip,
-.playoffBadge,
-.clincherBadge {
+.locationChip {
   letter-spacing: 0.08em;
   text-transform: uppercase;
   font-size: 0.72rem;
@@ -78,23 +59,23 @@
   display: inline-flex;
   padding: 8px 12px;
   border-radius: 999px;
-  background: rgba(255, 250, 240, 0.14);
-  border: 1px solid rgba(255, 250, 240, 0.2);
+  background: rgba(255, 248, 239, 0.14);
+  border: 1px solid rgba(255, 248, 239, 0.16);
 }
 
 .title {
-  margin: 18px 0 10px;
-  max-width: 12ch;
-  font-size: clamp(2.3rem, 5vw, 4.2rem);
+  margin: 18px 0 12px;
+  font-size: clamp(2.1rem, 5vw, 4rem);
   line-height: 0.98;
+  max-width: 12ch;
 }
 
 .description {
-  max-width: 60ch;
+  max-width: 58ch;
   margin: 0;
-  color: rgba(255, 250, 240, 0.84);
+  color: rgba(255, 248, 239, 0.82);
+  font-size: 1.02rem;
   line-height: 1.65;
-  font-size: 1rem;
 }
 
 .statRow {
@@ -104,28 +85,16 @@
   gap: 12px;
 }
 
-.statCard,
-.heroCallout,
-.previewCard,
-.helperCard,
-.stateCard,
-.metricCard,
-.upcomingCard,
-.playerCard,
-.infoTile {
-  border-radius: 22px;
-}
-
 .statCard {
   padding: 16px;
-  background: rgba(255, 250, 240, 0.12);
-  border: 1px solid rgba(255, 250, 240, 0.14);
-  text-align: center;
+  border-radius: 20px;
+  background: rgba(255, 248, 239, 0.12);
+  border: 1px solid rgba(255, 248, 239, 0.12);
 }
 
 .statLabel {
   display: block;
-  color: rgba(255, 250, 240, 0.7);
+  color: rgba(255, 248, 239, 0.68);
   margin-bottom: 6px;
 }
 
@@ -133,10 +102,14 @@
   font-size: 1.2rem;
 }
 
+.statFormatValue {
+  display: block;
+  margin-bottom: 10px;
+}
+
 .statViewValue {
   display: flex;
   align-items: center;
-  justify-content: center;
   gap: 8px;
 }
 
@@ -144,215 +117,457 @@
   width: 22px;
   height: 22px;
   object-fit: contain;
+  flex-shrink: 0;
 }
 
 .formatToggle {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 8px;
-  margin-top: 10px;
-}
-
-.formatToggleButton,
-.segmentedButton,
-.primaryButton {
-  min-height: 42px;
-  border-radius: 14px;
-  font-weight: 700;
-  cursor: pointer;
-  transition: transform 0.18s ease, background 0.18s ease, border-color 0.18s ease;
 }
 
 .formatToggleButton {
-  border: 1px solid rgba(255, 250, 240, 0.18);
-  background: rgba(255, 250, 240, 0.08);
-  color: rgba(255, 250, 240, 0.88);
+  min-height: 38px;
+  border-radius: 14px;
+  border: 1px solid rgba(255, 248, 239, 0.16);
+  background: rgba(255, 248, 239, 0.08);
+  color: rgba(255, 248, 239, 0.84);
+  font-size: 0.86rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.18s ease, color 0.18s ease, border-color 0.18s ease,
+    transform 0.18s ease;
 }
 
-.formatToggleButton:hover,
-.segmentedButton:hover,
-.primaryButton:hover {
+.formatToggleButton:hover {
   transform: translateY(-1px);
+  background: rgba(255, 248, 239, 0.12);
 }
 
 .formatToggleButtonActive {
-  background: #fffaf0;
-  color: #14213d;
-  border-color: rgba(255, 250, 240, 0.3);
+  color: #14263f;
+  background: #fff8ef;
+  border-color: rgba(255, 248, 239, 0.4);
 }
 
-.heroCallout {
-  margin-top: 18px;
-  padding: 18px 20px;
+.groupStandingsCard {
+  margin-top: 16px;
+  padding: 20px;
+  border-radius: 24px;
+  background: rgba(255, 248, 239, 0.1);
+  border: 1px solid rgba(255, 248, 239, 0.12);
+}
+
+.groupStandingsHeader {
   display: flex;
   justify-content: space-between;
   gap: 16px;
-  align-items: center;
-  background: rgba(255, 250, 240, 0.12);
-  border: 1px solid rgba(255, 250, 240, 0.14);
+  align-items: flex-start;
+  margin-bottom: 16px;
 }
 
-.calloutEyebrow,
-.heroMetricLabel,
-.seedSpotlightLabel {
+.groupStandingsEyebrow,
+.groupStandingsSpotlightLabel {
   display: block;
-  color: rgba(255, 250, 240, 0.68);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-size: 0.72rem;
+  color: rgba(255, 248, 239, 0.66);
 }
 
-.calloutTitle {
+.groupStandingsTitle {
   display: block;
   margin-top: 8px;
-  font-size: 1.3rem;
+  font-size: clamp(1.25rem, 2vw, 1.7rem);
+  color: #fff8ef;
 }
 
-.calloutCopy {
+.groupStandingsCopy,
+.groupStandingsSpotlightMeta,
+.groupStandingsState {
+  color: rgba(255, 248, 239, 0.78);
+}
+
+.groupStandingsCopy {
+  max-width: 54ch;
   margin: 10px 0 0;
-  color: rgba(255, 250, 240, 0.82);
   line-height: 1.55;
 }
 
-.heroMetrics {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 10px;
-  min-width: 320px;
-}
-
-.heroMetric {
-  padding: 12px 14px;
-  border-radius: 16px;
-  background: rgba(255, 250, 240, 0.1);
-  border: 1px solid rgba(255, 250, 240, 0.12);
+.groupStandingsSpotlight {
+  min-width: 120px;
+  padding: 14px 16px;
+  border-radius: 18px;
+  background: rgba(255, 248, 239, 0.12);
+  border: 1px solid rgba(255, 248, 239, 0.12);
   text-align: center;
 }
 
-.heroMetricValue {
+.groupStandingsSpotlightValue {
   display: block;
-  margin-top: 6px;
-  font-size: 1.15rem;
+  margin: 8px 0 4px;
+  font-size: 1.45rem;
+  color: #fff8ef;
+}
+
+.groupStandingsTable {
+  display: grid;
+  gap: 8px;
+}
+
+.groupStandingsRow {
+  display: grid;
+  grid-template-columns: minmax(0, 50%) repeat(3, minmax(0, 1fr));
+  gap: 10px;
+  align-items: center;
+  padding: 12px 14px;
+  border-radius: 18px;
+  background: rgba(255, 248, 239, 0.08);
+  border: 1px solid transparent;
+  color: rgba(255, 248, 239, 0.88);
+}
+
+.groupStandingsHeaderRow {
+  padding-top: 0;
+  padding-bottom: 6px;
+  border-radius: 0;
+  background: transparent;
+  color: rgba(255, 248, 239, 0.58);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-size: 0.72rem;
+}
+
+.groupStandingsRowSelected {
+  background: rgba(255, 248, 239, 0.16);
+  border-color: rgba(255, 248, 239, 0.24);
+  box-shadow: 0 16px 32px rgba(20, 38, 63, 0.14);
+}
+
+.groupStandingsCellStrong {
+  font-weight: 700;
+  color: #fff8ef;
+}
+
+.groupStandingsTeam {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+
+.groupStandingsTeamLogo {
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+
+.groupStandingsTeamName {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.groupStandingsState {
+  padding: 14px 16px;
+  border-radius: 18px;
+  background: rgba(255, 248, 239, 0.08);
+}
+
+.selectorPanel {
+  padding: 24px;
+  border-radius: 28px;
 }
 
 .formLabel {
   display: block;
-  color: #6b7280;
+  color: #5f6c7f;
   margin-bottom: 10px;
 }
 
 .selectRow {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 152px;
+  grid-template-columns: minmax(0, 1fr) auto;
   gap: 10px;
+  align-items: center;
+}
+
+.select,
+.primaryButton {
+  min-height: 54px;
+  border-radius: 18px;
+  font-size: 0.98rem;
 }
 
 .select {
-  min-height: 48px;
-  border-radius: 16px;
-  border: 1px solid rgba(20, 33, 61, 0.12);
-  background: rgba(255, 255, 255, 0.88);
+  width: 100%;
+  border: 1px solid rgba(20, 38, 63, 0.14);
+  background: #fffdf8;
   padding: 0 16px;
-  color: #14213d;
-  font-size: 0.98rem;
+  color: #14263f;
+  outline: none;
+}
+
+.select:focus {
+  border-color: var(--selected-primary);
+  box-shadow: 0 0 0 4px rgba(22, 50, 79, 0.08);
 }
 
 .primaryButton {
   border: 0;
-  background: linear-gradient(135deg, var(--selected-primary), var(--selected-secondary));
-  color: #fffaf0;
+  padding: 0 20px;
+  background: linear-gradient(135deg, var(--selected-primary) 0%, var(--selected-secondary) 100%);
+  color: #fff7ed;
+  font-weight: 700;
+  cursor: pointer;
 }
 
 .primaryButton:disabled {
   opacity: 0.45;
   cursor: not-allowed;
-  transform: none;
 }
 
-.previewCard,
+.selectedTeamCard,
 .helperCard,
 .stateCard {
   margin-top: 18px;
   padding: 18px;
-  background: rgba(245, 241, 232, 0.8);
-  border: 1px solid rgba(20, 33, 61, 0.08);
+  border-radius: 22px;
+  border: 1px solid rgba(20, 38, 63, 0.08);
+  background: #fffdf8;
+}
+
+.selectedTeamCard {
+  padding: 0;
+  overflow: hidden;
+}
+
+.selectedLogo,
+.teamLogo {
+  width: 68px;
+  height: 68px;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+
+.selectedTeamIdentity,
+.teamMeta {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.teamSnapshot {
+  display: grid;
+  gap: 18px;
+  padding: 18px;
+}
+
+.selectedTeamTop {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  align-items: center;
+}
+
+.selectedTeamBrand {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.teamRecordPill,
+.teamSummaryCard,
+.playerCard,
+.teamSnapshotState {
+  border: 1px solid rgba(20, 38, 63, 0.08);
+  background: linear-gradient(180deg, #fffdf8 0%, #f8f3e8 100%);
+  box-shadow: 0 18px 40px rgba(20, 38, 63, 0.05);
+}
+
+.teamRecordPill {
+  min-width: 110px;
+  padding: 14px 16px;
+  border-radius: 18px;
   text-align: center;
 }
 
-.previewTop {
-  display: flex;
-  gap: 14px;
-  align-items: center;
-  justify-content: center;
-}
-
-.previewLogo {
-  width: 72px;
-  height: 72px;
-  object-fit: contain;
-}
-
-.previewLabel {
+.teamRecordLabel,
+.teamSummaryLabel,
+.playerRole,
+.playerStatLabel {
   display: block;
-  color: #92400e;
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #7b8798;
 }
 
-.previewName {
+.teamRecordValue,
+.teamSummaryValue,
+.playerName,
+.playerStatValue {
+  color: #14263f;
+}
+
+.teamRecordValue {
   display: block;
   margin-top: 6px;
-  font-size: 1.25rem;
+  font-size: 1.35rem;
 }
 
-.previewCopy,
-.helperCopy,
-.stateCopy,
-.cardNote,
-.upcomingMeta,
-.nextGameMeta {
-  margin: 8px 0 0;
-  color: #6b7280;
-  line-height: 1.55;
-}
-
-.previewGrid,
-.infoGrid,
-.playerStatsRow,
-.upcomingStats,
-.tablesGrid,
-.nextGameMetrics {
+.teamSummaryGrid {
   display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 12px;
 }
 
-.previewGrid {
-  margin-top: 16px;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+.teamSummaryCard {
+  padding: 16px;
+  border-radius: 18px;
 }
 
-.previewStat,
-.infoTile {
-  padding: 14px;
-  background: rgba(255, 255, 255, 0.78);
-  border: 1px solid rgba(20, 33, 61, 0.08);
-  text-align: center;
-}
-
-.previewStat span,
-.infoTile span,
-.playerStat span,
-.playerFeaturedStat span,
-.metricCard span,
-.upcomingStats span {
+.teamSummaryValue {
   display: block;
-  font-size: 0.74rem;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  color: #6b7280;
+  margin-top: 8px;
+  font-size: 1rem;
 }
 
-.previewStat strong,
-.infoTile strong,
-.metricCard strong,
-.upcomingStats strong {
+.playersPanel {
+  display: grid;
+  gap: 14px;
+}
+
+.playersPanelHeader {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: flex-start;
+}
+
+.playersPanelNote {
+  margin: 6px 0 0;
+  max-width: 30ch;
+  color: #5e6a7a;
+  font-size: 0.92rem;
+  line-height: 1.5;
+}
+
+.playersGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.playerCardFeatured {
+  grid-column: 1 / -1;
+}
+
+.playerCard,
+.teamSnapshotState {
+  padding: 14px;
+  border-radius: 20px;
+}
+
+.playerCardTop {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.playerHeadshotWrap {
+  width: 64px;
+  height: 64px;
+  border-radius: 18px;
+  overflow: hidden;
+  background: rgba(20, 38, 63, 0.08);
+  flex-shrink: 0;
+}
+
+.playerHeadshot {
+  width: 64px;
+  height: 64px;
+  object-fit: cover;
+}
+
+.playerHeader {
+  display: grid;
+  gap: 3px;
+}
+
+.playerPosition {
+  color: #5e6a7a;
+  font-size: 0.9rem;
+}
+
+.playerStats {
+  margin-top: 14px;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.playerStatsSingle {
+  grid-template-columns: 1fr;
+}
+
+.playerStatBlock {
+  padding: 10px 12px;
+  border-radius: 16px;
+  background: rgba(20, 38, 63, 0.04);
+}
+
+.playerStatValue {
   display: block;
   margin-top: 6px;
+  font-size: 1.05rem;
+}
+
+.teamSnapshotState {
+  margin-top: 0;
+}
+
+.selectedLabel,
+.sectionEyebrow,
+.sectionNote,
+.footerLabel,
+.marketTitle,
+.bestOddsLabel {
+  color: #7b8798;
+}
+
+.selectedName,
+.sectionTitle,
+.emptyTitle,
+.teamName,
+.bestOddsValue,
+.bookmakerName,
+.stateTitle {
+  color: #14263f;
+}
+
+.selectedMeta,
+.helperCopy,
+.stateCopy,
+.emptyCopy,
+.teamNickname,
+.bestOddsMeta,
+.marketMeta,
+.footerValue {
+  color: #5e6a7a;
+}
+
+.helperTitle,
+.stateTitle {
+  display: block;
+  margin-bottom: 8px;
+}
+
+.contentStack,
+.emptyState {
+  width: min(1180px, 100%);
+  margin: 0 auto;
 }
 
 .contentStack {
@@ -360,7 +575,13 @@
   gap: 20px;
 }
 
-.cardHeader {
+.section,
+.emptyState {
+  border-radius: 28px;
+  padding: 24px;
+}
+
+.sectionHeader {
   display: flex;
   justify-content: space-between;
   gap: 16px;
@@ -368,638 +589,289 @@
   margin-bottom: 18px;
 }
 
-.cardTitle {
+.sectionTitle {
   margin: 6px 0 0;
-  font-size: clamp(1.45rem, 2vw, 1.9rem);
+  font-size: clamp(1.4rem, 2vw, 2rem);
 }
 
-.cardNote {
-  max-width: 40ch;
+.sectionNote {
+  margin: 0;
+  padding-top: 6px;
 }
 
-.seedSpotlight {
-  min-width: 120px;
-  padding: 14px 16px;
-  border-radius: 18px;
-  text-align: center;
-  background: linear-gradient(135deg, var(--selected-primary), color-mix(in srgb, var(--selected-secondary) 65%, white));
-  color: #fffaf0;
-}
-
-.seedSpotlightValue {
-  display: block;
-  margin: 8px 0 4px;
-  font-size: 1.5rem;
-}
-
-.seedSpotlightMeta {
-  color: rgba(255, 250, 240, 0.8);
-  font-size: 0.84rem;
-}
-
-.infoGrid {
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  margin-bottom: 18px;
-}
-
-.tablesGrid {
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-}
-
-.table {
+.gamesGrid,
+.oddsGrid {
   display: grid;
-  gap: 8px;
+  gap: 16px;
 }
 
-.tableRow {
-  display: grid;
-  grid-template-columns: 56px minmax(0, 1.6fr) 62px 62px 72px;
-  align-items: center;
-  gap: 10px;
-  padding: 12px 14px;
-  border-radius: 18px;
-  background: rgba(248, 244, 236, 0.84);
-  border: 1px solid transparent;
+.gamesGrid {
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
 }
 
-.tableHeader {
-  background: transparent;
-  padding: 0 4px 8px;
-  border-radius: 0;
-  color: #6b7280;
-  font-size: 0.74rem;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-}
-
-.tableRowSelected {
-  background: rgba(255, 255, 255, 0.94);
-  border-color: color-mix(in srgb, var(--selected-primary) 18%, transparent);
-  box-shadow: 0 16px 32px rgba(20, 33, 61, 0.08);
-}
-
-.seedCell {
-  font-weight: 800;
-  color: var(--selected-primary);
-}
-
-.teamCell {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  min-width: 0;
-}
-
-.tableLogo {
-  width: 28px;
-  height: 28px;
-  object-fit: contain;
-}
-
-.teamCellMeta {
-  display: grid;
-  gap: 4px;
-  min-width: 0;
-}
-
-.teamCellMeta strong {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.playoffBadge,
-.clincherBadge {
-  display: inline-flex;
-  width: fit-content;
-  padding: 4px 8px;
-  border-radius: 999px;
-}
-
-.playoffBadgeLocked {
-  background: rgba(34, 197, 94, 0.16);
-  color: #166534;
-}
-
-.playoffBadgePlayIn {
-  background: rgba(245, 158, 11, 0.16);
-  color: #92400e;
-}
-
-.clincherBadge {
-  background: rgba(107, 114, 128, 0.14);
-  color: #4b5563;
-}
-
-.segmentedControl {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 10px;
-  margin-bottom: 18px;
-}
-
-.segmentedButton {
-  border: 1px solid rgba(20, 33, 61, 0.1);
-  background: rgba(248, 244, 236, 0.92);
-  color: #475569;
-}
-
-.segmentedButtonActive {
-  color: #fffaf0;
-  border-color: transparent;
-  background: linear-gradient(135deg, var(--selected-primary), var(--selected-secondary));
-}
-
-.playersGrid {
-  display: grid;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
-  gap: 14px;
-}
-
-.playerCard {
-  padding: 16px;
-  background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.96) 0%, rgba(247, 243, 235, 0.96) 100%);
-  border: 1px solid rgba(20, 33, 61, 0.08);
-  text-align: center;
-}
-
-.playerCardFeaturedMobile {
-  grid-column: auto;
-}
-
-.playerTop {
-  display: grid;
-  grid-template-columns: 36px 68px minmax(0, 1fr);
-  gap: 12px;
-  align-items: center;
-}
-
-.playerRank {
-  width: 36px;
-  height: 36px;
-  display: grid;
-  place-items: center;
-  border-radius: 999px;
-  background: color-mix(in srgb, var(--selected-primary) 14%, white);
-  color: var(--selected-primary);
-  font-weight: 800;
-}
-
-.playerHeadshot {
-  width: 68px;
-  height: 68px;
-  border-radius: 18px;
-  object-fit: cover;
-  background: rgba(20, 33, 61, 0.06);
-}
-
-.playerIdentity {
-  min-width: 0;
-  text-align: center;
-}
-
-.playerIdentity strong {
-  display: block;
-  line-height: 1.2;
-}
-
-.playerIdentity span,
-.playerFooter {
-  color: #6b7280;
-  font-size: 0.88rem;
-}
-
-.playerFeaturedStat {
-  margin-top: 16px;
-  padding: 14px;
-  border-radius: 18px;
-  background: linear-gradient(135deg, rgba(20, 33, 61, 0.92), color-mix(in srgb, var(--selected-secondary) 76%, black));
-  color: #fffaf0;
-}
-
-.playerFeaturedStat span {
-  color: rgba(255, 250, 240, 0.7);
-}
-
-.playerFeaturedStat strong {
-  display: block;
-  margin-top: 6px;
-  font-size: 1.4rem;
-}
-
-.playerStatsRow {
-  margin-top: 14px;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-}
-
-.playerStat {
-  padding: 12px;
-  border-radius: 16px;
-  background: rgba(248, 244, 236, 0.94);
-}
-
-.playerStat strong {
-  display: block;
-  margin-top: 6px;
-}
-
-.playerFooter {
-  margin-top: 12px;
-  display: flex;
-  justify-content: center;
-  gap: 8px;
-  flex-wrap: wrap;
-}
-
-.nextGameSpotlight {
-  padding: 18px;
+.gameCard,
+.oddsEventCard {
   border-radius: 24px;
-  background: linear-gradient(135deg, rgba(20, 33, 61, 0.96), rgba(61, 89, 139, 0.92));
-  color: #fffaf0;
-  margin-bottom: 18px;
+  padding: 18px;
+  background: #fffdf8;
+  border: 1px solid rgba(20, 38, 63, 0.08);
 }
 
-.nextGameTop {
+.cardTopRow {
   display: flex;
   justify-content: space-between;
-  gap: 16px;
+  gap: 10px;
+  align-items: center;
+  margin-bottom: 18px;
+}
+
+.kickoffChip,
+.locationChip {
+  display: inline-flex;
+  align-items: center;
+  padding: 8px 12px;
+  border-radius: 999px;
+  background: rgba(20, 38, 63, 0.06);
+}
+
+.matchupGrid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  gap: 12px;
   align-items: center;
 }
 
-.nextGameEyebrow {
-  color: rgba(255, 250, 240, 0.7);
+.teamPanel {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 104px;
+  padding: 16px;
+  border-radius: 20px;
+  border: 2px solid rgba(20, 38, 63, 0.08);
+  background: linear-gradient(180deg, #ffffff 0%, #f7f3eb 100%);
 }
 
-.nextGameTitle {
-  margin: 8px 0 0;
-  font-size: clamp(1.4rem, 2vw, 1.8rem);
+.teamPanelSelected {
+  box-shadow: 0 20px 45px rgba(20, 38, 63, 0.12);
+  transform: translateY(-1px);
 }
 
-.nextGameMeta {
-  color: rgba(255, 250, 240, 0.82);
+.teamName,
+.bannerTeamName {
+  font-size: 1rem;
 }
 
-.matchupLogos {
+.teamNickname,
+.marketTeam,
+.bestOddsMeta,
+.marketMeta,
+.footerValue {
+  font-size: 0.92rem;
+}
+
+.versus {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 999px;
+  background: linear-gradient(135deg, var(--selected-primary) 0%, var(--selected-secondary) 100%);
+  color: #fff7ed;
+  font-weight: 800;
+}
+
+.gameFooter {
+  margin-top: 18px;
+  padding-top: 18px;
+  border-top: 1px solid rgba(20, 38, 63, 0.08);
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.matchupBanner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+  padding: 14px 16px;
+  border-radius: 22px;
+  background: linear-gradient(180deg, rgba(20, 38, 63, 0.05) 0%, rgba(20, 38, 63, 0.02) 100%);
+}
+
+.matchupTeam {
   display: flex;
   align-items: center;
   gap: 12px;
 }
 
-.matchupLogo {
-  width: 72px;
-  height: 72px;
-  object-fit: contain;
-  padding: 8px;
-  border-radius: 20px;
-  background: rgba(255, 250, 240, 0.08);
-}
-
-.matchupAt {
-  font-size: 1rem;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: rgba(255, 250, 240, 0.72);
-}
-
-.nextGameMetrics {
-  margin-top: 18px;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-}
-
-.metricCard {
-  padding: 16px;
-  background: rgba(255, 250, 240, 0.08);
-  border: 1px solid rgba(255, 250, 240, 0.12);
-  text-align: center;
-}
-
-.metricCard span,
-.metricCard small {
-  color: rgba(255, 250, 240, 0.72);
-}
-
-.metricCard strong {
-  font-size: 1.3rem;
-  color: #fffaf0;
-}
-
-.metricCard small {
-  display: block;
-  margin-top: 6px;
-  line-height: 1.45;
-}
-
-.nextGameAnalysis {
-  margin: 16px 0 0;
-  padding: 14px 16px;
-  border-radius: 18px;
-  background: rgba(255, 250, 240, 0.08);
-  border: 1px solid rgba(255, 250, 240, 0.12);
-  color: rgba(255, 250, 240, 0.88);
-  line-height: 1.65;
-  text-align: center;
-}
-
-.nextGameAnalysis p {
-  margin: 0;
-}
-
-.nextGameAnalysis p + p {
-  margin-top: 12px;
-}
-
-.aiOpinionLabel {
-  color: #fffaf0;
-}
-
-.upcomingGrid {
+.oddsSummaryGrid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 14px;
+  gap: 12px;
+  margin: 18px 0;
 }
 
-.upcomingCard {
+.bestOddsCard,
+.marketCard,
+.bookmakerCard {
+  border-radius: 20px;
+  border: 1px solid rgba(20, 38, 63, 0.08);
+  background: #fffaf1;
+}
+
+.bestOddsCard {
   padding: 16px;
-  background: rgba(248, 244, 236, 0.92);
-  border: 1px solid rgba(20, 33, 61, 0.08);
-  text-align: center;
 }
 
-.upcomingCardTop {
-  display: flex;
-  justify-content: center;
+.bestOddsValue {
+  display: block;
+  margin: 10px 0 8px;
+  font-size: clamp(1.4rem, 3vw, 2rem);
+}
+
+.bookmakerGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 12px;
+}
+
+.bookmakerCard {
+  padding: 14px;
+  background: linear-gradient(180deg, #fffdf8 0%, #f8f3e8 100%);
+}
+
+.bookmakerHeader {
+  margin-bottom: 12px;
+}
+
+.marketStack {
+  display: grid;
+  gap: 10px;
+}
+
+.marketCard {
+  padding: 14px;
+  background: rgba(255, 255, 255, 0.86);
+}
+
+.marketList {
+  margin-top: 10px;
+  display: grid;
+  gap: 8px;
+}
+
+.marketRow {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto auto;
   gap: 10px;
   align-items: center;
-  flex-wrap: wrap;
 }
 
-.dateChip,
-.locationChip {
-  display: inline-flex;
-  padding: 6px 10px;
-  border-radius: 999px;
-}
-
-.dateChip {
-  background: rgba(20, 33, 61, 0.08);
-  color: #475569;
-}
-
-.locationChip {
-  background: color-mix(in srgb, var(--selected-secondary) 18%, white);
-  color: #92400e;
-}
-
-.upcomingMatchup {
-  display: block;
-  margin-top: 14px;
-  font-size: 1.1rem;
-}
-
-.upcomingStats {
-  margin-top: 14px;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+.marketValue {
+  color: #14263f;
 }
 
 .emptyState {
-  padding: 32px;
   text-align: center;
 }
 
 .emptyTitle {
-  margin: 10px 0 12px;
-  font-size: clamp(1.7rem, 4vw, 2.5rem);
+  margin: 10px auto 12px;
+  max-width: 16ch;
+  font-size: clamp(1.8rem, 4vw, 2.8rem);
 }
 
 .emptyCopy {
-  max-width: 58ch;
+  max-width: 56ch;
   margin: 0 auto;
-  color: #6b7280;
   line-height: 1.65;
 }
 
-.stateTitle {
-  display: block;
-  font-size: 1rem;
-}
-
-@media (max-width: 1180px) {
-  .playersGrid {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-  }
-}
-
 @media (max-width: 980px) {
-  .hero,
-  .tablesGrid,
-  .upcomingGrid,
-  .nextGameMetrics,
-  .infoGrid {
+  .hero {
     grid-template-columns: 1fr;
   }
 
-  .cardHeader,
-  .heroCallout,
-  .nextGameTop {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-
-  .heroMetrics,
-  .previewGrid {
-    min-width: 0;
-    width: 100%;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-  }
-
-  .playersGrid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 10px;
-  }
-
-  .playerCardFeaturedMobile {
-    grid-column: 1 / -1;
-  }
-
-  .playerCard {
-    padding: 13px;
-  }
-
-  .playerTop {
+  .oddsSummaryGrid {
     grid-template-columns: 1fr;
-    justify-items: center;
-    gap: 10px;
-  }
-
-  .playerIdentity {
-    width: 100%;
-    text-align: center;
-  }
-
-  .playerIdentity strong,
-  .playerIdentity span,
-  .playerFeaturedStat,
-  .playerStat,
-  .playerFooter {
-    text-align: center;
-  }
-
-  .playerFeaturedStat {
-    margin-top: 12px;
-    padding: 12px;
-  }
-
-  .playerStatsRow {
-    gap: 8px;
   }
 }
 
 @media (max-width: 720px) {
   .page {
-    padding-inline: 14px;
+    padding: 18px 14px 40px;
   }
 
   .heroPanel,
   .selectorPanel,
-  .card,
+  .section,
   .emptyState {
+    padding: 20px;
     border-radius: 24px;
   }
 
   .statRow,
+  .gameFooter,
   .selectRow,
-  .heroMetrics,
-  .previewGrid,
-  .segmentedControl,
-  .upcomingStats {
+  .matchupGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .teamSummaryGrid,
+  .playerStats {
     grid-template-columns: 1fr;
   }
 
   .playersGrid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 10px;
   }
 
-  .tableRow {
-    grid-template-columns: 44px minmax(0, 1.3fr) 52px 52px 62px;
-    padding-inline: 10px;
-    font-size: 0.92rem;
-  }
-
-  .selectorPanel,
-  .previewCard,
-  .helperCard,
-  .stateCard,
-  .infoTile,
-  .previewStat,
-  .playerCard,
-  .metricCard,
-  .upcomingCard,
-  .nextGameAnalysis {
-    text-align: center;
-  }
-
-  .formLabel {
-    text-align: center;
-  }
-
-  .select {
-    text-align: center;
-    text-align-last: center;
-  }
-
-  .previewTop {
-    flex-direction: column;
-  }
-
-  .previewTop > div {
-    text-align: center;
-  }
-
-  .seedSpotlight {
-    width: 100%;
-    margin-inline: auto;
-    text-align: center;
-  }
-
-  .nextGameTop {
-    align-items: center;
-    text-align: center;
-  }
-
-  .matchupLogos {
-    width: 100%;
-    justify-content: center;
-  }
-
-  .playerCard {
-    padding: 12px;
-  }
-
-  .playerTop {
+  .bookmakerGrid,
+  .gamesGrid {
     grid-template-columns: 1fr;
-    gap: 8px;
-    justify-items: center;
   }
 
-  .playerHeadshot {
-    width: 48px;
-    height: 48px;
-    border-radius: 14px;
+  .cardTopRow,
+  .sectionHeader,
+  .matchupBanner {
+    flex-direction: column;
+    align-items: flex-start;
   }
 
-  .matchupLogo {
-    width: 56px;
-    height: 56px;
+  .matchupBanner {
+    align-items: stretch;
   }
 
-  .playerRank {
-    width: 30px;
-    height: 30px;
-    font-size: 0.85rem;
+  .selectedTeamTop,
+  .selectedTeamBrand,
+  .playersPanelHeader,
+  .groupStandingsHeader {
+    flex-direction: column;
+    align-items: flex-start;
   }
 
-  .playerIdentity strong {
-    font-size: 0.9rem;
+  .matchupTeam,
+  .selectedTeamCard,
+  .teamPanel {
+    width: 100%;
   }
 
-  .playerIdentity span,
-  .playerFooter {
-    font-size: 0.74rem;
+  .groupStandingsSpotlight {
+    width: 100%;
+    text-align: left;
   }
 
-  .playerFeaturedStat {
-    margin-top: 12px;
-    padding: 10px;
-    border-radius: 14px;
-  }
-
-  .playerFeaturedStat strong {
-    font-size: 1.12rem;
-  }
-
-  .playerStatsRow {
-    margin-top: 10px;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 8px;
-  }
-
-  .playerCardFeaturedMobile {
-    grid-column: 1 / -1;
-  }
-
-  .playerStat {
-    padding: 8px;
-    border-radius: 12px;
-  }
-
-  .playerStat strong {
+  .groupStandingsRow {
+    grid-template-columns: minmax(0, 50%) repeat(3, minmax(0, 1fr));
+    gap: 6px;
+    padding: 12px 10px;
     font-size: 0.88rem;
   }
 
-  .playerFooter {
-    margin-top: 10px;
-    gap: 6px;
+  .versus {
+    margin: 0 auto;
   }
 }

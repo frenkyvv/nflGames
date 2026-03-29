@@ -3,6 +3,7 @@
 import Image from 'next/image';
 import React, { useEffect, useState } from 'react';
 import styles from '../Home.module.css';
+import { getTeamTimeZone } from './teamUtils';
 
 const formatStat = (value) => {
   if (!value || Number.isNaN(value)) {
@@ -12,19 +13,32 @@ const formatStat = (value) => {
   return value.toFixed(1);
 };
 
-const formatCurrentTime = (date) =>
+const formatCurrentTime = (date, timeZone) =>
   new Intl.DateTimeFormat('es-MX', {
     hour: '2-digit',
     minute: '2-digit',
+    ...(timeZone ? { timeZone } : {}),
   }).format(date);
 
-const renderPlayerCard = (player, role, primaryLabel, primaryValue, secondaryLabel, secondaryValue, fallbackImage) => {
+const renderPlayerCard = (
+  player,
+  role,
+  primaryLabel,
+  primaryValue,
+  secondaryLabel,
+  secondaryValue,
+  fallbackImage,
+  featured = false
+) => {
   if (!player) {
     return null;
   }
 
   return (
-    <article key={`${role}-${player.id}`} className={styles.playerCard}>
+    <article
+      key={`${role}-${player.id}`}
+      className={`${styles.playerCard} ${featured ? styles.playerCardFeatured : ''}`}
+    >
       <div className={styles.playerCardTop}>
         <div className={styles.playerHeadshotWrap}>
           <Image
@@ -64,7 +78,10 @@ const TeamSnapshot = ({ team }) => {
   const [snapshot, setSnapshot] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [currentTime, setCurrentTime] = useState(() => formatCurrentTime(new Date()));
+  const teamTimeZone = getTeamTimeZone(team?.abbreviation);
+  const [currentTime, setCurrentTime] = useState(() =>
+    formatCurrentTime(new Date(), teamTimeZone)
+  );
 
   useEffect(() => {
     if (!team?.abbreviation) {
@@ -106,14 +123,18 @@ const TeamSnapshot = ({ team }) => {
   }, [team?.abbreviation]);
 
   useEffect(() => {
+    setCurrentTime(formatCurrentTime(new Date(), teamTimeZone));
+  }, [teamTimeZone]);
+
+  useEffect(() => {
     const intervalId = window.setInterval(() => {
-      setCurrentTime(formatCurrentTime(new Date()));
+      setCurrentTime(formatCurrentTime(new Date(), teamTimeZone));
     }, 60000);
 
     return () => {
       window.clearInterval(intervalId);
     };
-  }, []);
+  }, [teamTimeZone]);
 
   if (!team) {
     return null;
@@ -193,7 +214,8 @@ const TeamSnapshot = ({ team }) => {
                 snapshot.leaders.quarterback?.passingYardsPerGame,
                 'Carrera YDS/J',
                 snapshot.leaders.quarterback?.quarterbackRushingYardsPerGame,
-                team.logo
+                team.logo,
+                true
               )}
               {snapshot.leaders.receivers.map((player) =>
                 renderPlayerCard(
