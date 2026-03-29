@@ -33,12 +33,12 @@ export function getUpcomingEvents() {
   });
 }
 
-export function getUpcomingOdds() {
+export function getUpcomingOdds(oddsFormat: 'decimal' | 'american' = 'decimal') {
   return requestOddsApi('odds', {
     apiKey: API_KEY,
     regions: 'us',
     markets: 'h2h,spreads',
-    oddsFormat: 'decimal',
+    oddsFormat,
     dateFormat: 'iso',
   });
 }

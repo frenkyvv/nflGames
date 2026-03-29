@@ -20,6 +20,8 @@ type GroupStandingRow = {
   isSelected: boolean;
 };
 
+type OddsFormat = 'decimal' | 'american';
+
 type TeamProfileSummary = {
   groupStanding?: {
     name: string;
@@ -33,6 +35,7 @@ type TeamProfileSummary = {
 const HomePage = () => {
   const [teamName, setTeamName] = useState('');
   const [submittedTeamName, setSubmittedTeamName] = useState<string | null>(null);
+  const [oddsFormat, setOddsFormat] = useState<OddsFormat>('decimal');
   const [teamProfile, setTeamProfile] = useState<TeamProfileSummary | null>(null);
   const [teamProfileLoading, setTeamProfileLoading] = useState(false);
   const [teamProfileError, setTeamProfileError] = useState<string | null>(null);
@@ -44,6 +47,7 @@ const HomePage = () => {
     '--selected-secondary': previewTeam?.secondaryColor ?? '#d97706',
     '--selected-accent': previewTeam?.accentColor ?? '#f2d7a1',
   } as React.CSSProperties;
+  const oddsFormatLabel = oddsFormat === 'american' ? 'Americano' : 'Decimal';
 
   useEffect(() => {
     if (!submittedTeam?.abbreviation) {
@@ -114,13 +118,33 @@ const HomePage = () => {
           <span className={styles.kicker}>NFL Odds Dashboard</span>
           <h1 className={styles.title}>Herramienta de estadisticas NFL</h1>
           <p className={styles.description}>
-            Elige tu equipo y revisa los proximos juegos, moneyline en formato decimal y spreads por casa de apuestas en un tablero mas visual.
+            Elige tu equipo y revisa los proximos juegos, moneyline en formato {oddsFormat === 'american' ? 'americano' : 'decimal'} y spreads por casa de apuestas en un tablero mas visual.
           </p>
 
           <div className={styles.statRow}>
             <div className={styles.statCard}>
               <span className={styles.statLabel}>Formato</span>
-              <strong className={styles.statValue}>Decimal</strong>
+              <strong className={`${styles.statValue} ${styles.statFormatValue}`}>{oddsFormatLabel}</strong>
+              <div className={styles.formatToggle}>
+                <button
+                  type="button"
+                  className={`${styles.formatToggleButton} ${
+                    oddsFormat === 'decimal' ? styles.formatToggleButtonActive : ''
+                  }`}
+                  onClick={() => setOddsFormat('decimal')}
+                >
+                  Decimal
+                </button>
+                <button
+                  type="button"
+                  className={`${styles.formatToggleButton} ${
+                    oddsFormat === 'american' ? styles.formatToggleButtonActive : ''
+                  }`}
+                  onClick={() => setOddsFormat('american')}
+                >
+                  Americano
+                </button>
+              </div>
             </div>
             <div className={styles.statCard}>
               <span className={styles.statLabel}>Equipos</span>
@@ -270,7 +294,7 @@ const HomePage = () => {
             <div className={styles.helperCard}>
               <strong className={styles.helperTitle}>Empieza con cualquier franquicia</strong>
               <p className={styles.helperCopy}>
-                Vas a ver los siguientes partidos del equipo, sus cuotas decimales y spreads en una interfaz mas limpia para revisar rapido.
+                Vas a ver los siguientes partidos del equipo, sus cuotas en formato decimal o americano y spreads en una interfaz mas limpia para revisar rapido.
               </p>
             </div>
           )}
@@ -280,14 +304,14 @@ const HomePage = () => {
       {submittedTeamName ? (
         <div className={styles.contentStack}>
           <UpcomingNFLGames team={submittedTeamName} />
-          <UpcomingOdds team={submittedTeamName} />
+          <UpcomingOdds team={submittedTeamName} oddsFormat={oddsFormat} />
         </div>
       ) : (
         <section className={styles.emptyState}>
           <span className={styles.sectionEyebrow}>Listo para explorar</span>
           <h2 className={styles.emptyTitle}>Selecciona un equipo para cargar su calendario y sus cuotas</h2>
           <p className={styles.emptyCopy}>
-            La nueva vista convierte las cuotas americanas a decimal directamente desde la API y agrega logos por equipo para que todo sea mucho mas facil de leer.
+            La nueva vista te deja cambiar entre cuotas decimales y americanas, ademas de agregar logos por equipo para que todo sea mucho mas facil de leer.
           </p>
         </section>
       )}

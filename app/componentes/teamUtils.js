@@ -27,6 +27,32 @@ export const formatDecimalOdds = (value) => {
   return value.toFixed(2);
 };
 
+export const formatAmericanOdds = (value) => {
+  if (typeof value !== 'number' || Number.isNaN(value) || value === 0) {
+    return '--';
+  }
+
+  const roundedValue = Math.round(value);
+  return roundedValue > 0 ? `+${roundedValue}` : `${roundedValue}`;
+};
+
+export const convertOddsToDecimal = (value, oddsFormat = 'decimal') => {
+  if (typeof value !== 'number' || Number.isNaN(value) || value === 0) {
+    return null;
+  }
+
+  if (oddsFormat === 'american') {
+    return value > 0 ? 1 + value / 100 : 1 + 100 / Math.abs(value);
+  }
+
+  return value;
+};
+
+export const formatOddsValue = (value, oddsFormat = 'decimal') =>
+  oddsFormat === 'american'
+    ? formatAmericanOdds(value)
+    : formatDecimalOdds(value);
+
 export const formatSpread = (point) => {
   if (typeof point !== 'number' || Number.isNaN(point)) {
     return '--';
@@ -39,9 +65,18 @@ export const formatSpread = (point) => {
   return `${point}`;
 };
 
-export const getImpliedProbability = (value) => {
-  if (typeof value !== 'number' || value <= 0) {
+export const getImpliedProbability = (value, oddsFormat = 'decimal') => {
+  if (typeof value !== 'number' || Number.isNaN(value) || value === 0) {
     return null;
+  }
+
+  if (oddsFormat === 'american') {
+    const probability =
+      value > 0
+        ? (100 / (value + 100)) * 100
+        : (Math.abs(value) / (Math.abs(value) + 100)) * 100;
+
+    return probability.toFixed(1);
   }
 
   return ((1 / value) * 100).toFixed(1);
@@ -53,7 +88,7 @@ export const findMarket = (bookmaker, key) =>
 export const getOutcome = (market, teamName) =>
   market?.outcomes?.find((outcome) => outcome.name === teamName);
 
-export const getBestPrice = (bookmakers = [], marketKey, teamName) => {
+export const getBestPrice = (bookmakers = [], marketKey, teamName, oddsFormat = 'decimal') => {
   let bestPrice = null;
 
   for (const bookmaker of bookmakers) {
@@ -64,11 +99,18 @@ export const getBestPrice = (bookmakers = [], marketKey, teamName) => {
       continue;
     }
 
-    if (!bestPrice || outcome.price > bestPrice.price) {
+    const decimalPrice = convertOddsToDecimal(outcome.price, oddsFormat);
+
+    if (decimalPrice === null) {
+      continue;
+    }
+
+    if (!bestPrice || decimalPrice > bestPrice.decimalPrice) {
       bestPrice = {
         bookmaker: bookmaker.title,
         price: outcome.price,
         point: typeof outcome.point === 'number' ? outcome.point : null,
+        decimalPrice,
       };
     }
   }

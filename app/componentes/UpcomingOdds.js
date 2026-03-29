@@ -5,7 +5,7 @@ import React, { useEffect, useState } from 'react';
 import styles from '../Home.module.css';
 import {
   findMarket,
-  formatDecimalOdds,
+  formatOddsValue,
   formatGameTime,
   formatSpread,
   getBestPrice,
@@ -14,10 +14,12 @@ import {
   getTeamData,
 } from './teamUtils';
 
-const UpcomingOdds = ({ team }) => {
+const UpcomingOdds = ({ team, oddsFormat = 'decimal' }) => {
   const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+
+  const formatLabel = oddsFormat === 'american' ? 'americanos' : 'decimales';
 
   useEffect(() => {
     let cancelled = false;
@@ -27,7 +29,7 @@ const UpcomingOdds = ({ team }) => {
         setLoading(true);
         setError(null);
 
-        const response = await fetch('/api/odds');
+        const response = await fetch(`/api/odds?format=${oddsFormat}`);
         if (response.ok === false) {
           throw new Error('No fue posible cargar las cuotas.');
         }
@@ -52,7 +54,7 @@ const UpcomingOdds = ({ team }) => {
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [oddsFormat]);
 
   const filteredEvents = events.filter(
     (event) => event.home_team === team || event.away_team === team
@@ -64,9 +66,9 @@ const UpcomingOdds = ({ team }) => {
       <div className={styles.sectionHeader}>
         <div>
           <span className={styles.sectionEyebrow}>Cuotas</span>
-          <h2 className={styles.sectionTitle}>Momios decimales de {selectedTeam?.shortName ?? team}</h2>
+          <h2 className={styles.sectionTitle}>Momios {formatLabel} de {selectedTeam?.shortName ?? team}</h2>
         </div>
-        <p className={styles.sectionNote}>Moneyline y spread en formato decimal.</p>
+        <p className={styles.sectionNote}>Moneyline y spread en formato {oddsFormat === 'american' ? 'americano' : 'decimal'}.</p>
       </div>
 
       {loading ? (
@@ -95,11 +97,11 @@ const UpcomingOdds = ({ team }) => {
           {filteredEvents.map((event) => {
             const homeTeam = getTeamData(event.home_team);
             const awayTeam = getTeamData(event.away_team);
-            const selectedBest = getBestPrice(event.bookmakers, 'h2h', team);
+            const selectedBest = getBestPrice(event.bookmakers, 'h2h', team, oddsFormat);
             const opponent = event.home_team === team ? event.away_team : event.home_team;
-            const opponentBest = getBestPrice(event.bookmakers, 'h2h', opponent);
-            const homeBest = getBestPrice(event.bookmakers, 'h2h', event.home_team);
-            const awayBest = getBestPrice(event.bookmakers, 'h2h', event.away_team);
+            const opponentBest = getBestPrice(event.bookmakers, 'h2h', opponent, oddsFormat);
+            const homeBest = getBestPrice(event.bookmakers, 'h2h', event.home_team, oddsFormat);
+            const awayBest = getBestPrice(event.bookmakers, 'h2h', event.away_team, oddsFormat);
 
             return (
               <article key={event.id} className={styles.oddsEventCard}>
@@ -123,25 +125,25 @@ const UpcomingOdds = ({ team }) => {
                 <div className={styles.oddsSummaryGrid}>
                   <div className={styles.bestOddsCard}>
                     <span className={styles.bestOddsLabel}>Mejor cuota para {selectedTeam?.shortName ?? team}</span>
-                    <strong className={styles.bestOddsValue}>{formatDecimalOdds(selectedBest?.price)}</strong>
+                    <strong className={styles.bestOddsValue}>{formatOddsValue(selectedBest?.price, oddsFormat)}</strong>
                     <span className={styles.bestOddsMeta}>
                       {selectedBest?.bookmaker
-                        ? selectedBest.bookmaker + ' · Prob. ' + getImpliedProbability(selectedBest.price) + '%'
+                        ? selectedBest.bookmaker + ' · Prob. ' + getImpliedProbability(selectedBest.price, oddsFormat) + '%'
                         : 'Sin datos'}
                     </span>
                   </div>
                   <div className={styles.bestOddsCard}>
                     <span className={styles.bestOddsLabel}>Mejor cuota para el rival</span>
-                    <strong className={styles.bestOddsValue}>{formatDecimalOdds(opponentBest?.price)}</strong>
+                    <strong className={styles.bestOddsValue}>{formatOddsValue(opponentBest?.price, oddsFormat)}</strong>
                     <span className={styles.bestOddsMeta}>
                       {opponentBest?.bookmaker
-                        ? opponentBest.bookmaker + ' · Prob. ' + getImpliedProbability(opponentBest.price) + '%'
+                        ? opponentBest.bookmaker + ' · Prob. ' + getImpliedProbability(opponentBest.price, oddsFormat) + '%'
                         : 'Sin datos'}
                     </span>
                   </div>
                   <div className={styles.bestOddsCard}>
                     <span className={styles.bestOddsLabel}>Resumen del juego</span>
-                    <strong className={styles.bestOddsValue}>{formatDecimalOdds(awayBest?.price)} / {formatDecimalOdds(homeBest?.price)}</strong>
+                    <strong className={styles.bestOddsValue}>{formatOddsValue(awayBest?.price, oddsFormat)} / {formatOddsValue(homeBest?.price, oddsFormat)}</strong>
                     <span className={styles.bestOddsMeta}>{event.away_team} vs {event.home_team}</span>
                   </div>
                 </div>
@@ -167,9 +169,9 @@ const UpcomingOdds = ({ team }) => {
                                 return (
                                   <div key={bookmaker.key + '-' + teamName + '-h2h'} className={styles.marketRow}>
                                     <span className={styles.marketTeam}>{teamInfo?.shortName ?? teamName}</span>
-                                    <strong className={styles.marketValue}>{formatDecimalOdds(outcome?.price)}</strong>
+                                    <strong className={styles.marketValue}>{formatOddsValue(outcome?.price, oddsFormat)}</strong>
                                     <span className={styles.marketMeta}>
-                                      {outcome?.price ? getImpliedProbability(outcome.price) + '%' : '--'}
+                                      {outcome?.price ? getImpliedProbability(outcome.price, oddsFormat) + '%' : '--'}
                                     </span>
                                   </div>
                                 );
@@ -187,7 +189,7 @@ const UpcomingOdds = ({ team }) => {
                                   <div key={bookmaker.key + '-' + teamName + '-spread'} className={styles.marketRow}>
                                     <span className={styles.marketTeam}>{teamInfo?.shortName ?? teamName}</span>
                                     <strong className={styles.marketValue}>{formatSpread(outcome?.point)}</strong>
-                                    <span className={styles.marketMeta}>{formatDecimalOdds(outcome?.price)}</span>
+                                    <span className={styles.marketMeta}>{formatOddsValue(outcome?.price, oddsFormat)}</span>
                                   </div>
                                 );
                               })}
