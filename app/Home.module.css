@@ -90,6 +90,7 @@
   border-radius: 20px;
   background: rgba(255, 248, 239, 0.12);
   border: 1px solid rgba(255, 248, 239, 0.12);
+  text-align: center;
 }
 
 .statLabel {
@@ -110,6 +111,7 @@
 .statViewValue {
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 8px;
 }
 
@@ -356,6 +358,8 @@
   display: flex;
   flex-direction: column;
   gap: 4px;
+  align-items: center;
+  text-align: center;
 }
 
 .teamSnapshot {
@@ -366,15 +370,20 @@
 
 .selectedTeamTop {
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   gap: 16px;
   align-items: center;
+  flex-direction: column;
+  text-align: center;
 }
 
 .selectedTeamBrand {
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 14px;
+  flex-direction: column;
+  text-align: center;
 }
 
 .teamRecordPill,
@@ -426,6 +435,7 @@
 .teamSummaryCard {
   padding: 16px;
   border-radius: 18px;
+  text-align: center;
 }
 
 .teamSummaryValue {
@@ -441,17 +451,20 @@
 
 .playersPanelHeader {
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   gap: 12px;
   align-items: flex-start;
+  text-align: center;
 }
 
 .playersPanelNote {
   margin: 6px 0 0;
   max-width: 30ch;
+  margin-inline: auto;
   color: #5e6a7a;
   font-size: 0.92rem;
   line-height: 1.5;
+  text-align: center;
 }
 
 .playersGrid {
@@ -474,6 +487,8 @@
   display: flex;
   gap: 12px;
   align-items: center;
+  flex-direction: column;
+  text-align: center;
 }
 
 .playerHeadshotWrap {
@@ -494,11 +509,14 @@
 .playerHeader {
   display: grid;
   gap: 3px;
+  justify-items: center;
+  text-align: center;
 }
 
 .playerPosition {
   color: #5e6a7a;
   font-size: 0.9rem;
+  font-weight: 600;
 }
 
 .playerStats {
@@ -516,12 +534,14 @@
   padding: 10px 12px;
   border-radius: 16px;
   background: rgba(20, 38, 63, 0.04);
+  text-align: center;
 }
 
 .playerStatValue {
   display: block;
   margin-top: 6px;
   font-size: 1.05rem;
+  font-weight: 800;
 }
 
 .teamSnapshotState {
