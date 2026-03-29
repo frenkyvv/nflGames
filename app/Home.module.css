@@ -274,7 +274,7 @@
 }
 
 .playersPanelNote {
-  margin: 0;
+  margin: 6px 0 0;
   max-width: 30ch;
   color: #5e6a7a;
   font-size: 0.92rem;

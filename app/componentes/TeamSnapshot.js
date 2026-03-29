@@ -12,6 +12,12 @@ const formatStat = (value) => {
   return value.toFixed(1);
 };
 
+const formatCurrentTime = (date) =>
+  new Intl.DateTimeFormat('es-MX', {
+    hour: '2-digit',
+    minute: '2-digit',
+  }).format(date);
+
 const renderPlayerCard = (player, role, primaryLabel, primaryValue, secondaryLabel, secondaryValue, fallbackImage) => {
   if (!player) {
     return null;
@@ -58,6 +64,7 @@ const TeamSnapshot = ({ team }) => {
   const [snapshot, setSnapshot] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [currentTime, setCurrentTime] = useState(() => formatCurrentTime(new Date()));
 
   useEffect(() => {
     if (!team?.abbreviation) {
@@ -98,9 +105,23 @@ const TeamSnapshot = ({ team }) => {
     };
   }, [team?.abbreviation]);
 
+  useEffect(() => {
+    const intervalId = window.setInterval(() => {
+      setCurrentTime(formatCurrentTime(new Date()));
+    }, 60000);
+
+    return () => {
+      window.clearInterval(intervalId);
+    };
+  }, []);
+
   if (!team) {
     return null;
   }
+
+  const venueMeta = snapshot?.team?.venueName && snapshot?.team?.venueCity && snapshot?.team?.venueState
+    ? `${snapshot.team.venueName}, ${snapshot.team.venueCity}, ${snapshot.team.venueState} · ${currentTime}`
+    : `Hora actual ${currentTime}`;
 
   return (
     <div className={styles.teamSnapshot}>
@@ -117,7 +138,7 @@ const TeamSnapshot = ({ team }) => {
           <div className={styles.selectedTeamIdentity}>
             <span className={styles.selectedLabel}>Equipo activo</span>
             <strong className={styles.selectedName}>{team.apiName}</strong>
-            <span className={styles.selectedMeta}>Récord, líderes ofensivos y fotos de jugadores en la misma tarjeta.</span>
+            <span className={styles.selectedMeta}>{venueMeta}</span>
           </div>
         </div>
 
@@ -158,8 +179,10 @@ const TeamSnapshot = ({ team }) => {
 
           <div className={styles.playersPanel}>
             <div className={styles.playersPanelHeader}>
-              <span className={styles.sectionEyebrow}>Referentes ofensivos</span>
-              <p className={styles.playersPanelNote}>La selección incluye 1 QB, 2 receptores y 2 corredores para cubrir todo lo que pediste.</p>
+              <div>
+                <span className={styles.sectionEyebrow}>Top 5 del equipo</span>
+                <p className={styles.playersPanelNote}>QB, dos receptores y dos corredores con sus promedios por juego.</p>
+              </div>
             </div>
 
             <div className={styles.playersGrid}>

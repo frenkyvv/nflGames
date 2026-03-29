@@ -172,9 +172,10 @@ const pickRushers = (players) => {
 export const getEspnTeamProfile = async (abbreviation) => {
   const normalizedAbbreviation = abbreviation.toLowerCase();
 
-  const [scheduleData, rosterData] = await Promise.all([
+  const [scheduleData, rosterData, teamData] = await Promise.all([
     fetchEspnJson(`${ESPN_SITE_BASE}/teams/${normalizedAbbreviation}/schedule`),
     fetchEspnJson(`${ESPN_SITE_BASE}/teams/${normalizedAbbreviation}/roster`),
+    fetchEspnJson(`${ESPN_SITE_BASE}/teams/${normalizedAbbreviation}`),
   ]);
 
   const teamId = scheduleData.team?.id;
@@ -206,6 +207,9 @@ export const getEspnTeamProfile = async (abbreviation) => {
       recordSummary: scheduleData.team?.recordSummary ?? '--',
       standingSummary: scheduleData.team?.standingSummary ?? 'Sin standing disponible',
       seasonSummary,
+      venueName: teamData.team?.franchise?.venue?.fullName ?? null,
+      venueCity: teamData.team?.franchise?.venue?.address?.city ?? null,
+      venueState: teamData.team?.franchise?.venue?.address?.state ?? null,
     },
     leaders: {
       quarterback,
