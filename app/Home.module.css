@@ -217,7 +217,7 @@
 
 .groupStandingsRow {
   display: grid;
-  grid-template-columns: 56px minmax(0, 1.8fr) 64px 64px 64px;
+  grid-template-columns: minmax(0, 1.8fr) 64px 64px 64px;
   gap: 10px;
   align-items: center;
   padding: 12px 14px;
@@ -858,7 +858,7 @@
   }
 
   .groupStandingsRow {
-    grid-template-columns: 48px minmax(0, 1fr) 42px 42px 42px;
+    grid-template-columns: minmax(0, 1fr) 42px 42px 42px;
     gap: 8px;
     padding: 12px;
     font-size: 0.92rem;

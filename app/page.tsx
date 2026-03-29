@@ -163,7 +163,9 @@ const HomePage = () => {
                     sizes="22px"
                   />
                 ) : null}
-                <strong className={styles.statValue}>{submittedTeamName ? previewTeam?.shortName ?? 'Activa' : 'Selecciona uno'}</strong>
+                <strong className={styles.statValue}>
+                  {previewTeam?.shortName ?? 'Selecciona uno'}
+                </strong>
               </div>
             </div>
           </div>
@@ -210,21 +212,21 @@ const HomePage = () => {
             activeGroupStanding ? (
               <div className={styles.groupStandingsTable}>
                 <div className={`${styles.groupStandingsRow} ${styles.groupStandingsHeaderRow}`}>
-                  <span>Pos</span>
                   <span>Equipo</span>
                   <span>JJ</span>
                   <span>G</span>
                   <span>P</span>
                 </div>
 
-                {activeGroupStanding.rows.map((row) => (
+                {[...activeGroupStanding.rows]
+                  .sort((left, right) => left.position - right.position)
+                  .map((row) => (
                   <div
                     key={row.abbreviation ?? row.shortDisplayName}
                     className={`${styles.groupStandingsRow} ${
                       row.isSelected ? styles.groupStandingsRowSelected : ''
                     }`}
                   >
-                    <span className={styles.groupStandingsCellStrong}>{row.position}</span>
                     <div className={styles.groupStandingsTeam}>
                       {row.logo ? (
                         <Image
