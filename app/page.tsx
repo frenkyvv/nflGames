@@ -7,9 +7,9 @@ import UpcomingOdds from './componentes/UpcomingOdds';
 import TeamSnapshot from './componentes/TeamSnapshot';
 import styles from './Home.module.css';
 import nflTeams from './componentes/nflTeams.json';
-import { getTeamData } from './componentes/teamUtils';
+import { getTeamData, getTeamTimeZone } from './componentes/teamUtils';
 
-type GroupStandingRow = {
+type StandingRow = {
   position: number;
   abbreviation: string | null;
   shortDisplayName: string;
@@ -17,20 +17,54 @@ type GroupStandingRow = {
   gamesPlayed: number;
   wins: number;
   losses: number;
+  ties: number;
+  winPct: string;
   isSelected: boolean;
 };
 
 type OddsFormat = 'decimal' | 'american';
 
-type TeamProfileSummary = {
-  groupStanding?: {
-    name: string;
-    abbreviation: string | null;
-    conferenceName: string | null;
-    selectedPosition: number | null;
-    rows: GroupStandingRow[];
-  } | null;
+type StandingGroup = {
+  name: string;
+  abbreviation: string | null;
+  conferenceName: string | null;
+  selectedPosition: number | null;
+  rows: StandingRow[];
 };
+
+type TeamProfileSummary = {
+  groupStanding?: StandingGroup | null;
+  conferenceStanding?: StandingGroup | null;
+};
+
+type FeaturedGame = {
+  id: string;
+  date: string;
+  home_team: string;
+  away_team: string;
+  status_text?: string;
+  status_short?: string;
+  slate_label: string;
+  source?: string;
+};
+
+type ScoreEntry = {
+  name: string;
+  score: string;
+};
+
+type ScoreEvent = {
+  id: string;
+  commence_time: string;
+  completed: boolean;
+  home_team: string;
+  away_team: string;
+  scores?: ScoreEntry[];
+  status_text?: string;
+  status_short?: string;
+};
+
+type StandingTab = 'division' | 'conference';
 
 const HomePage = () => {
   const [teamName, setTeamName] = useState('');
@@ -39,6 +73,10 @@ const HomePage = () => {
   const [teamProfile, setTeamProfile] = useState<TeamProfileSummary | null>(null);
   const [teamProfileLoading, setTeamProfileLoading] = useState(false);
   const [teamProfileError, setTeamProfileError] = useState<string | null>(null);
+  const [standingTab, setStandingTab] = useState<StandingTab>('division');
+  const [featuredGames, setFeaturedGames] = useState<FeaturedGame[]>([]);
+  const [scores, setScores] = useState<ScoreEvent[]>([]);
+  const [scoresLoading, setScoresLoading] = useState(true);
 
   const submittedTeam = submittedTeamName ? getTeamData(submittedTeamName) : null;
   const previewTeam = getTeamData(submittedTeamName ?? teamName);
@@ -48,6 +86,43 @@ const HomePage = () => {
     '--selected-accent': previewTeam?.accentColor ?? '#f2d7a1',
   } as React.CSSProperties;
   const oddsFormatLabel = oddsFormat === 'american' ? 'Americano' : 'Decimal';
+
+  useEffect(() => {
+    let cancelled = false;
+
+    const loadScoreboard = async () => {
+      try {
+        setScoresLoading(true);
+        const [eventsRes, scoresRes] = await Promise.all([
+          fetch('/api/events'),
+          fetch('/api/scores'),
+        ]);
+
+        const eventsData = eventsRes.ok ? await eventsRes.json() : [];
+        const scoresData = scoresRes.ok ? await scoresRes.json() : [];
+
+        if (cancelled === false) {
+          setFeaturedGames(Array.isArray(eventsData) ? eventsData : []);
+          setScores(Array.isArray(scoresData) ? scoresData : []);
+        }
+      } catch {
+        // scoreboard is optional
+      } finally {
+        if (cancelled === false) {
+          setScoresLoading(false);
+        }
+      }
+    };
+
+    loadScoreboard();
+
+    const intervalId = window.setInterval(loadScoreboard, 60000);
+
+    return () => {
+      cancelled = true;
+      window.clearInterval(intervalId);
+    };
+  }, []);
 
   useEffect(() => {
     if (!submittedTeam?.abbreviation) {
@@ -102,6 +177,14 @@ const HomePage = () => {
   }, [submittedTeam?.abbreviation]);
 
   const activeGroupStanding = teamProfile?.groupStanding ?? null;
+  const activeConferenceStanding = teamProfile?.conferenceStanding ?? null;
+  const activeStanding = standingTab === 'conference' ? activeConferenceStanding : activeGroupStanding;
+
+  const getTeamScore = (game: FeaturedGame): ScoreEvent | null => {
+    return scores.find(
+      (s) => s.home_team === game.home_team && s.away_team === game.away_team
+    ) ?? null;
+  };
 
   const handleTeamNameChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setTeamName(e.target.value);
@@ -111,8 +194,106 @@ const HomePage = () => {
     setSubmittedTeamName(teamName);
   };
 
+  const slateLabel = featuredGames[0]?.slate_label ?? null;
+
   return (
     <main className={styles.page} style={pageTheme}>
+      {/* Live Scoreboard */}
+      {(scoresLoading || featuredGames.length > 0) ? (
+        <section className={styles.scoreboardSection}>
+          <div className={styles.scoreboardHeader}>
+            <span className={styles.scoreboardEyebrow}>Pizarrón NFL</span>
+            {slateLabel ? (
+              <span className={styles.scoreboardSlate}>{slateLabel}</span>
+            ) : null}
+          </div>
+
+          {scoresLoading && featuredGames.length === 0 ? (
+            <div className={styles.scoreboardLoading}>Cargando juegos...</div>
+          ) : (
+            <div className={styles.scoreboardStrip}>
+              {featuredGames.map((game) => {
+                const scoreEvent = getTeamScore(game);
+                const homeTeam = getTeamData(game.home_team);
+                const awayTeam = getTeamData(game.away_team);
+                const homeScore = scoreEvent?.scores?.find((s) => s.name === game.home_team)?.score;
+                const awayScore = scoreEvent?.scores?.find((s) => s.name === game.away_team)?.score;
+                const isLive = scoreEvent && !scoreEvent.completed && (scoreEvent.scores?.length ?? 0) > 0;
+                const isCompleted = scoreEvent?.completed;
+                const statusLabel = isCompleted
+                  ? 'Final'
+                  : isLive
+                  ? (scoreEvent?.status_short ?? 'En vivo')
+                  : game.status_text ?? new Intl.DateTimeFormat('es-MX', {
+                      weekday: 'short',
+                      hour: '2-digit',
+                      minute: '2-digit',
+                      timeZone: getTeamTimeZone(homeTeam?.abbreviation) ?? undefined,
+                    }).format(new Date(game.date));
+
+                return (
+                  <div
+                    key={game.id}
+                    className={`${styles.scoreCard} ${isLive ? styles.scoreCardLive : ''} ${isCompleted ? styles.scoreCardCompleted : ''}`}
+                  >
+                    <span className={`${styles.scoreCardStatus} ${isLive ? styles.scoreCardStatusLive : ''}`}>
+                      {statusLabel}
+                    </span>
+                    <div className={styles.scoreCardMatchup}>
+                      <div className={styles.scoreCardTeam}>
+                        {awayTeam?.logo ? (
+                          <Image
+                            className={styles.scoreCardLogo}
+                            src={awayTeam.logo}
+                            alt={game.away_team}
+                            width={24}
+                            height={24}
+                            sizes="24px"
+                          />
+                        ) : null}
+                        <span className={styles.scoreCardAbbr}>
+                          {awayTeam?.abbreviation ?? game.away_team.slice(0, 3).toUpperCase()}
+                        </span>
+                        {awayScore !== undefined ? (
+                          <strong className={`${styles.scoreCardScore} ${
+                            isCompleted && awayScore > (homeScore ?? '0') ? styles.scoreCardScoreWin : ''
+                          }`}>
+                            {awayScore}
+                          </strong>
+                        ) : null}
+                      </div>
+                      <span className={styles.scoreCardSep}>@</span>
+                      <div className={styles.scoreCardTeam}>
+                        {homeTeam?.logo ? (
+                          <Image
+                            className={styles.scoreCardLogo}
+                            src={homeTeam.logo}
+                            alt={game.home_team}
+                            width={24}
+                            height={24}
+                            sizes="24px"
+                          />
+                        ) : null}
+                        <span className={styles.scoreCardAbbr}>
+                          {homeTeam?.abbreviation ?? game.home_team.slice(0, 3).toUpperCase()}
+                        </span>
+                        {homeScore !== undefined ? (
+                          <strong className={`${styles.scoreCardScore} ${
+                            isCompleted && homeScore > (awayScore ?? '0') ? styles.scoreCardScoreWin : ''
+                          }`}>
+                            {homeScore}
+                          </strong>
+                        ) : null}
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          )}
+        </section>
+      ) : null}
+
       <div className={styles.hero}>
         <section className={styles.heroPanel}>
           <span className={styles.kicker}>NFL Odds Dashboard</span>
@@ -173,25 +354,40 @@ const HomePage = () => {
           <div className={styles.groupStandingsCard}>
             <div className={styles.groupStandingsHeader}>
               <div>
-                <span className={styles.groupStandingsEyebrow}>Grupo del equipo</span>
+                <div className={styles.standingTabRow}>
+                  <button
+                    type="button"
+                    className={`${styles.standingTab} ${standingTab === 'division' ? styles.standingTabActive : ''}`}
+                    onClick={() => setStandingTab('division')}
+                  >
+                    División
+                  </button>
+                  <button
+                    type="button"
+                    className={`${styles.standingTab} ${standingTab === 'conference' ? styles.standingTabActive : ''}`}
+                    onClick={() => setStandingTab('conference')}
+                  >
+                    Conferencia
+                  </button>
+                </div>
                 <strong className={styles.groupStandingsTitle}>
-                  {activeGroupStanding?.name ?? 'Tabla divisional'}
+                  {activeStanding?.name ?? (standingTab === 'conference' ? 'Tabla de conferencia' : 'Tabla divisional')}
                 </strong>
                 <p className={styles.groupStandingsCopy}>
                   {submittedTeamName
-                    ? 'Posicion en la tabla del equipo elegido con JJ, ganados y perdidos de su grupo.'
-                    : 'Selecciona un equipo para ver la posicion dentro de su grupo y una tabla rapida de la division.'}
+                    ? 'Posicion en la tabla del equipo elegido con JJ, ganados y perdidos.'
+                    : 'Selecciona un equipo para ver la posicion dentro de su grupo y una tabla rapida.'}
                 </p>
               </div>
 
-              {activeGroupStanding?.selectedPosition ? (
+              {activeStanding?.selectedPosition ? (
                 <div className={styles.groupStandingsSpotlight}>
                   <span className={styles.groupStandingsSpotlightLabel}>Posicion actual</span>
                   <strong className={styles.groupStandingsSpotlightValue}>
-                    #{activeGroupStanding.selectedPosition}
+                    #{activeStanding.selectedPosition}
                   </strong>
                   <span className={styles.groupStandingsSpotlightMeta}>
-                    {activeGroupStanding.conferenceName ?? 'NFL'}
+                    {activeStanding.name ?? (standingTab === 'conference' ? 'Conferencia' : 'División')}
                   </span>
                 </div>
               ) : null}
@@ -209,16 +405,17 @@ const HomePage = () => {
 
             {teamProfileLoading === false &&
             teamProfileError === null &&
-            activeGroupStanding ? (
+            activeStanding ? (
               <div className={styles.groupStandingsTable}>
                 <div className={`${styles.groupStandingsRow} ${styles.groupStandingsHeaderRow}`}>
                   <span>Equipo</span>
                   <span>JJ</span>
                   <span>G</span>
                   <span>P</span>
+                  <span className={styles.groupStandingsPctCol}>%</span>
                 </div>
 
-                {[...activeGroupStanding.rows]
+                {[...activeStanding.rows]
                   .sort((left, right) => left.position - right.position)
                   .map((row) => (
                   <div
@@ -245,6 +442,7 @@ const HomePage = () => {
                     <span>{row.gamesPlayed}</span>
                     <span>{row.wins}</span>
                     <span>{row.losses}</span>
+                    <span className={styles.groupStandingsPctCol}>{row.winPct ?? '--'}</span>
                   </div>
                 ))}
               </div>
@@ -253,7 +451,7 @@ const HomePage = () => {
             {teamProfileLoading === false &&
             teamProfileError === null &&
             submittedTeamName &&
-            activeGroupStanding === null ? (
+            activeStanding === null ? (
               <div className={styles.groupStandingsState}>
                 Esta tabla aparecera cuando ESPN publique standings disponibles para el grupo del equipo.
               </div>

@@ -3,7 +3,7 @@
 import Image from 'next/image';
 import React, { useEffect, useState } from 'react';
 import styles from '../Home.module.css';
-import { getTeamTimeZone } from './teamUtils';
+import { formatGameTime, getTeamData, getTeamTimeZone } from './teamUtils';
 
 const formatStat = (value) => {
   if (!value || Number.isNaN(value)) {
@@ -19,6 +19,12 @@ const formatCurrentTime = (date, timeZone) =>
     minute: '2-digit',
     ...(timeZone ? { timeZone } : {}),
   }).format(date);
+
+const formatDate = (dateString) =>
+  new Intl.DateTimeFormat('es-MX', {
+    month: 'short',
+    day: 'numeric',
+  }).format(new Date(dateString));
 
 const renderPlayerCard = (
   player,
@@ -144,6 +150,10 @@ const TeamSnapshot = ({ team }) => {
     ? `${snapshot.team.venueName}, ${snapshot.team.venueCity}, ${snapshot.team.venueState} · ${currentTime}`
     : `Hora actual ${currentTime}`;
 
+  const nextGame = snapshot?.nextGames?.[0] ?? null;
+  const completedGames = snapshot?.completedGames ?? [];
+  const recentGames = completedGames.slice(0, 5);
+
   return (
     <div className={styles.teamSnapshot}>
       <div className={styles.selectedTeamTop}>
@@ -196,7 +206,103 @@ const TeamSnapshot = ({ team }) => {
               <span className={styles.teamSummaryLabel}>Posición</span>
               <strong className={styles.teamSummaryValue}>{snapshot.team.standingSummary}</strong>
             </div>
+            {snapshot.team.divisionName ? (
+              <div className={styles.teamSummaryCard}>
+                <span className={styles.teamSummaryLabel}>División</span>
+                <strong className={styles.teamSummaryValue}>
+                  {snapshot.team.divisionPosition ? `#${snapshot.team.divisionPosition} ` : ''}
+                  {snapshot.team.divisionName}
+                </strong>
+              </div>
+            ) : null}
           </div>
+
+          {nextGame ? (
+            <div className={styles.nextGameCard}>
+              <div className={styles.nextGameHeader}>
+                <span className={styles.sectionEyebrow}>Próximo juego</span>
+                <span className={styles.nextGameBadge}>
+                  {nextGame.seasonStage}
+                  {nextGame.week ? ` · Sem. ${nextGame.week}` : ''}
+                </span>
+              </div>
+              <div className={styles.nextGameBody}>
+                <div className={styles.nextGameTeams}>
+                  <div className={styles.nextGameTeamSlot}>
+                    {nextGame.opponentLogo ? (
+                      <Image
+                        className={styles.nextGameLogo}
+                        src={nextGame.opponentLogo}
+                        alt={nextGame.opponentShortName}
+                        width={40}
+                        height={40}
+                        sizes="40px"
+                      />
+                    ) : null}
+                    <div>
+                      <span className={styles.nextGameTeamLabel}>
+                        {nextGame.isHome ? 'vs' : '@'}
+                      </span>
+                      <strong className={styles.nextGameTeamName}>
+                        {nextGame.opponentShortName}
+                      </strong>
+                    </div>
+                  </div>
+                  <div className={styles.nextGameMeta}>
+                    <span className={styles.nextGameDate}>
+                      {formatGameTime(nextGame.date)}
+                    </span>
+                    {nextGame.venueName ? (
+                      <span className={styles.nextGameVenue}>
+                        {nextGame.venueName}
+                        {nextGame.venueCity ? `, ${nextGame.venueCity}` : ''}
+                      </span>
+                    ) : null}
+                    <span className={styles.nextGameLocation}>
+                      {nextGame.isHome ? 'Local' : 'Visitante'}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          ) : null}
+
+          {recentGames.length > 0 ? (
+            <div className={styles.recentResultsPanel}>
+              <div className={styles.recentResultsHeader}>
+                <span className={styles.sectionEyebrow}>Últimos resultados</span>
+                <span className={styles.recentResultsNote}>{recentGames.length} juegos recientes</span>
+              </div>
+              <div className={styles.recentResultsList}>
+                {recentGames.map((game) => (
+                  <div
+                    key={game.id}
+                    className={`${styles.recentResultRow} ${
+                      game.selectedWon ? styles.recentResultRowWin : styles.recentResultRowLoss
+                    }`}
+                  >
+                    <span className={`${styles.recentResultBadge} ${
+                      game.selectedWon ? styles.recentResultBadgeWin : styles.recentResultBadgeLoss
+                    }`}>
+                      {game.selectedWon ? 'G' : 'P'}
+                    </span>
+                    <div className={styles.recentResultInfo}>
+                      <span className={styles.recentResultOpponent}>
+                        {game.isHome ? 'vs' : '@'} {game.opponentShortName}
+                      </span>
+                      <span className={styles.recentResultStage}>{game.seasonStage}</span>
+                    </div>
+                    <div className={styles.recentResultScore}>
+                      <strong className={styles.recentResultScoreValue}>
+                        {game.selectedScore}–{game.opponentScore}
+                      </strong>
+                      <span className={styles.recentResultDate}>{formatDate(game.date)}</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          ) : null}
 
           <div className={styles.playersPanel}>
             <div className={styles.playersPanelHeader}>

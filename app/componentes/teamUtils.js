@@ -36,6 +36,8 @@ const teamTimeZoneMap = {
   WSH: 'America/New_York',
 };
 
+export const getAllTeams = () => nflTeams;
+
 export const getTeamData = (teamName) => {
   if (!teamName) {
     return null;
@@ -97,10 +99,54 @@ export const formatSpread = (point) => {
   }
 
   if (point > 0) {
-    return `+${point}`;
+    return `+${point.toFixed(1)}`;
   }
 
-  return `${point}`;
+  return point.toFixed(1);
+};
+
+export const formatLineValue = (value) => {
+  if (typeof value !== 'number' || Number.isNaN(value)) {
+    return '--';
+  }
+
+  return value.toFixed(1);
+};
+
+export const getConsensusSpread = (bookmakers = [], teamName) => {
+  const points = bookmakers.flatMap((bm) => {
+    const market = bm.markets?.find((m) => m.key === 'spreads');
+    const outcome = market?.outcomes?.find((o) => o.name === teamName);
+    return typeof outcome?.point === 'number' ? [outcome.point] : [];
+  });
+
+  if (points.length === 0) {
+    return null;
+  }
+
+  const sorted = [...points].sort((a, b) => a - b);
+  const mid = Math.floor(sorted.length / 2);
+  return sorted.length % 2 !== 0
+    ? sorted[mid]
+    : (sorted[mid - 1] + sorted[mid]) / 2;
+};
+
+export const getConsensusTotal = (bookmakers = []) => {
+  const totals = bookmakers.flatMap((bm) => {
+    const market = bm.markets?.find((m) => m.key === 'totals');
+    const over = market?.outcomes?.find((o) => o.name === 'Over');
+    return typeof over?.point === 'number' ? [over.point] : [];
+  });
+
+  if (totals.length === 0) {
+    return null;
+  }
+
+  const sorted = [...totals].sort((a, b) => a - b);
+  const mid = Math.floor(sorted.length / 2);
+  return sorted.length % 2 !== 0
+    ? sorted[mid]
+    : (sorted[mid - 1] + sorted[mid]) / 2;
 };
 
 export const getImpliedProbability = (value, oddsFormat = 'decimal') => {
